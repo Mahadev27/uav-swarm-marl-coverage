@@ -1,0 +1,1620 @@
+\documentclass[a4paper, 10pt, conference]{ieeeconf}
+\IEEEoverridecommandlockouts
+\overrideIEEEmargins
+
+\usepackage[caption=false, font=footnotesize]{subfig}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\hypersetup{breaklinks=true}
+\usepackage{xurl}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{float}
+
+% A self-contained algorithm float. Built from base LaTeX and float
+% rather than algorithm2e so the document compiles on any TeX
+% installation without an extra package having to be present.
+\newfloat{algorithm}{htbp}{loa}
+\floatname{algorithm}{Algorithm}
+\newcounter{algln}
+\newcommand{\algreset}{\setcounter{algln}{0}}
+\newcommand{\albox}[1]{% one numbered line, #1 already indented
+  \refstepcounter{algln}%
+  \noindent\makebox[1.5em][r]{\scriptsize\thealgln:}\;#1\par\vspace{0.4pt}}
+\newcommand{\alplain}[1]{\noindent\makebox[1.5em][r]{}\;#1\par\vspace{0.4pt}}
+\newcommand{\alind}{\hspace*{1.1em}}
+\newcommand{\alkw}[1]{\textbf{#1}}
+\newcommand{\alcom}[1]{{\footnotesize\itshape\;// #1}}
+\newenvironment{algbody}{\par\vspace{1pt}\hrule\vspace{2pt}\algreset
+  \scriptsize\setlength{\parindent}{0pt}}
+  {\vspace{2pt}\hrule\vspace{1pt}}
+\usepackage{stfloats}
+\renewcommand{\arraystretch}{0.90}
+
+% Let full-width floats occupy more of a page before LaTeX gives up and
+% defers them, and allow a little more text on a page carrying one. The
+% defaults are tuned for pages with at most one small float; this paper
+% has four double-column figures and seven tables, and the stock values
+% leave usable space empty at the foot of several pages.
+\renewcommand{\topfraction}{0.92}
+\renewcommand{\bottomfraction}{0.7}
+\renewcommand{\textfraction}{0.07}
+\renewcommand{\floatpagefraction}{0.82}
+\renewcommand{\dbltopfraction}{0.92}
+\renewcommand{\dblfloatpagefraction}{0.82}
+\setcounter{topnumber}{3}
+\setcounter{bottomnumber}{2}
+\setcounter{totalnumber}{5}
+\setcounter{dbltopnumber}{3}
+
+% Whitespace around floats and captions. The stock separations assume a
+% page with one or two floats; this paper carries fifteen, so the
+% defaults spend close to a page on gaps alone. Nothing below changes
+% any figure, table, number or sentence.
+\setlength{\textfloatsep}{6pt plus 2pt minus 2pt}
+\setlength{\dbltextfloatsep}{6pt plus 2pt minus 2pt}
+\setlength{\intextsep}{5pt plus 2pt minus 2pt}
+\setlength{\dblfloatsep}{7pt plus 2pt minus 3pt}
+\setlength{\floatsep}{5pt plus 2pt minus 2pt}
+\setlength{\abovecaptionskip}{4pt}
+\setlength{\belowcaptionskip}{0pt}
+
+% Display-equation and heading whitespace. Same principle: gaps only.
+\AtBeginDocument{%
+  \setlength{\abovedisplayskip}{4pt plus 2pt minus 2pt}%
+  \setlength{\belowdisplayskip}{4pt plus 2pt minus 2pt}%
+  \setlength{\abovedisplayshortskip}{2pt plus 1pt minus 1pt}%
+  \setlength{\belowdisplayshortskip}{3pt plus 1pt minus 1pt}%
+}
+% Character protrusion and font expansion. This sets the same words in
+% slightly less space by adjusting inter-letter and inter-word fitting,
+% typically 2-4% over a paper this length. No word is removed and no
+% type size changes.
+% tracking is off deliberately: it letterspaces the small-caps table
+% captions, which leaves numbers such as 94.2 unsearchable in the PDF.
+\usepackage[protrusion=true, expansion=true, tracking=false]{microtype}
+
+% Close the gap between reference entries. All 28 stay, in order.
+\usepackage{etoolbox}
+\apptocmd{\thebibliography}{%
+  \setlength{\itemsep}{0pt plus 0.3pt}%
+  \setlength{\parsep}{0pt}%
+  \setlength{\topsep}{2pt}%
+}{}{}
+
+% Fixed so the title page does not silently change on every recompile.
+\newcommand{\submissiondate}{September 2026}
+
+\usepackage{titlesec}
+\titlespacing*{\section}{0pt}{5pt plus 1pt minus 1pt}{3pt}
+\titlespacing*{\subsection}{0pt}{4pt plus 1pt minus 1pt}{2pt}
+\titlespacing*{\subsubsection}{0pt}{3pt plus 1pt minus 1pt}{2pt}
+
+\title{\LARGE \bf
+Autonomous Decentralised Search and Coverage with\\
+Unmanned Aerial Systems Swarms
+}
+
+\author{Reddy, Mahadev Devireddy Venkata}
+
+\begin{document}
+
+%% ===================== COVER PAGE (excluded from page count) ===
+\begin{titlepage}
+    \begin{center}
+        \vspace*{1cm}
+        {\huge Autonomous Decentralised Search and Coverage with
+        Unmanned Aerial Systems Swarms}
+
+        \vspace{0.6cm}
+        {\large By}
+
+        \vspace{0.4cm}
+        \textbf{Mahadev Reddy Devireddy Venkata}
+
+        \vspace{1.2cm}
+        {\huge\textbf{MSc Robotics Dissertation}}
+
+        \vspace{16mm}
+
+        \begin{center}
+            \includegraphics[scale=0.5]{logos/bristolcrest_colour.pdf}
+            \hspace{8mm}
+            \includegraphics[scale=0.30]{logos/UWE_insignia.png}
+        \end{center}
+
+        \vspace{10mm}
+        {\large School of Engineering Mathematics and Technology\\
+        \textsc{University of Bristol}}\\
+        \&\\
+        {\large School of Engineering\\
+        \textsc{University of the West of England}}\\
+
+        \vspace{0.6cm}
+        \begin{minipage}{10cm}
+            \centering
+            A MSc dissertation submitted to the University of
+            Bristol and the University of the West of England in
+            accordance with the requirements of the degree of
+            \textsc{Master of Science in Robotics} in the Faculty
+            of Engineering.
+        \end{minipage}\\
+
+        \vspace{0.5cm}
+        Student ID: 2823511\\
+        Supervisor: Dr Davood Asadi
+
+        \vspace{0.6cm}
+        \submissiondate
+    \end{center}
+
+    \newpage
+
+    {\large{Declaration of own work}}
+
+    I declare that the work in this MSc dissertation was carried
+    out in accordance with the requirements of the University's
+    Regulations and Code of Practice for Research Degree Programmes
+    and that it has not been submitted for any other academic award.
+    Except where indicated by specific reference in the text, the
+    work is the candidate's own work. Work done in collaboration
+    with, or with the assistance of, others, is indicated as such.
+    Any views expressed in the dissertation are those of the author.
+
+    \begin{flushright}
+    Mahadev Reddy Devireddy Venkata, \submissiondate
+    \end{flushright}
+
+    \vspace{0.6cm}
+    {\large{Ethics statement}}
+
+    This project did not require ethical review as determined by my
+    supervisor, Dr Davood Asadi. All work was simulation-based, with
+    no human participants, animal subjects or physical hardware
+    trials.
+
+    \begin{flushright}
+    Mahadev Reddy Devireddy Venkata, \submissiondate
+    \end{flushright}
+
+    \vspace{0.6cm}
+    {\large{AI Usage Statement}}
+
+    %% ------------------------------------------------------------
+    %% ACTION REQUIRED BEFORE SUBMISSION.
+    %% Rewrite this so it describes what you actually did, and check
+    %% the wording your programme handbook requires. Do not sign the
+    %% template below without reading it against your own practice.
+    %% ------------------------------------------------------------
+    Third-party AI tools were used in this project for debugging
+    assistance with Python simulation code, for clarifying concepts
+    in reinforcement learning and classical control, for the code and
+    data audit reported in Section~\ref{sec:validity}, and for
+    structural and language feedback on written drafts. All
+    experimental results were generated by code written for this
+    project.
+
+    \vspace{0.6cm}
+    {\large{Acknowledgements}}
+
+    I thank Dr Davood Asadi for supervision throughout the project,
+    and in particular for the feedback that prompted the extended
+    evaluation in Section~\ref{sec:extended} and the diagnostic work
+    in Section~\ref{sec:validity}.
+
+    \vspace{0.6cm}
+    {\large{Supplementary material}}
+
+    Source code, all result files, the complete statistical output and
+    the full figure set accompany this report as supplementary
+    material.
+
+\end{titlepage}
+
+\maketitle
+\thispagestyle{empty}
+\pagestyle{empty}
+
+%% ===================== ABSTRACT ================================
+\begin{abstract}
+UAV swarms that operate without a central controller are attractive
+for search and coverage in disaster response, due to the fact that
+losing any single agent will not end the mission. In this work the
+authors ask whether a decentralized multi-agent reinforcement learning
+policy (i.e., one that executes locally and passes no messages) can
+match classical reactive control on area coverage. We compared four
+controllers on a $50\times50$ grid representing
+$150\,\text{m}\times150\,\text{m}$ with six UAVs. These were as
+follows: 1. Boids flocking; 2. Artificial Potential Fields (APF); 3. a
+single-agent PPO hybrid; and 4. a parameter-shared multi-agent PPO
+policy (i.e., one in which all six UAVs learn and none is hand-coded).
+Obstacle density was varied from 0\% to 30\%, and every condition was
+run on 50 matched seeds across two disjoint seed sets, which provides
+1{,}600 runs in total. Each seed will reproduce an identical obstacle
+layout for every controller. Therefore the comparisons utilize paired
+Wilcoxon signed-rank tests with Holm-Bonferroni correction,
+matched-pairs rank-biserial correlation, and bootstrap confidence
+intervals. The decentralized MARL policy exceeds the 90\% coverage
+target in all eight density-by-seed-set cells by mean, and it does so
+significantly in seven of them after correction. Thus it matches APF
+and outperforms the two other controllers, which never reach the
+target. It beats APF significantly in open terrain (i.e.,
+approximately +4.7 and +5.0 percentage points at 0\% obstacles), and
+it is statistically indistinguishable from it at 10\% and 20\% on both
+seed sets. However, APF will retain an advantage at the hardest
+density on the development set ($-3.8$ points). All controllers
+transferred to held-out layouts within 2.4 points, and none did so
+significantly. In addition, auditing the apparatus produced three
+further findings. 1. Changing only the reward scheme, from per-agent
+to the shared team reward that the multi-agent literature warns
+against, costs 30.6 points, which exceeds the gap between any two
+controllers compared here. 2. Repeating training at four seeds at 20\%
+density shows that the one-million-step budget is "undertrained"
+there: the across-seed spread represents 7.8 points, closing to 4.2 at
+1.85M steps, where every seed will overtake APF. Therefore at that
+density the budget, and not the method, sets the measured parity. 3.
+Absolute-cell accounting shows that APF's apparent improvement with
+obstacle density represents a denominator artefact, since it covers
+640 fewer cells at 30\% density than at 0\%, while the free area
+shrinks faster. The same audit retracts a figure from an earlier draft
+of this work whose checkpoint could not be reproduced, and it reverses
+the conclusion that was drawn from it.
+\end{abstract}
+
+%% ===================== INTRODUCTION ============================
+\section{INTRODUCTION}\label{sec:intro}
+
+\subsection{Motivation}
+
+Covering an unknown area with a team of unmanned aerial vehicles
+represents a long-standing problem, and it has immediate use in
+disaster response, wildfire monitoring, and post-event damage
+assessment~\cite{erdelj2017}. After an earthquake or flood, searching
+the affected ground quickly is what will determine whether survivors
+are found. A single UAV is too slow and too fragile. A centrally
+controlled team is faster. However, the controller then becomes a
+"single point of failure", and in a collapsed or contested environment
+the communication link that centralization depends upon is exactly
+what will fail first. Therefore decentralized swarms avoid that
+problem, due to the fact that each agent will decide based upon what
+it senses locally. In addition, the swarm will keep operating when
+agents drop out~\cite{dorigo2021}.
+
+\subsection{Problem Statement}
+
+A decentralized swarm must cover as much of an unknown, obstructed
+area as possible within a fixed flight budget, utilizing only local
+sensing and without exchanging messages. There are two families of
+solution. 1. Reactive controllers (e.g., Boids and Artificial
+Potential Fields) are cheap, they require no training, and they
+represent the de facto baselines. 2. Learned policies will provide
+better coordination in principle. However, they face a scaling
+barrier, due to the fact that a joint action space over $N$ agents
+with $|A|$ actions each will grow as $|A|^N$, which is intractable
+beyond a handful of agents. Therefore one question remains unresolved:
+whether a learned decentralized policy can actually beat a well-tuned
+reactive controller on this task, under matched conditions and with
+evidence strong enough to believe.
+
+\subsection{Research Gap}
+
+There were three gaps in the existing work that motivated this
+project. 1. Most studies of decentralized coverage will perform their
+testing in empty or lightly obstructed environments~\cite{zhu2023}.
+Therefore it is unclear how these methods behave as the environment
+hardens. 2. Almost all of them will report coverage percentage and
+then stop, even though battery use, collision risk, and computational
+cost matter just as much once a system leaves simulation. 3. Least
+discussed of all, the evidentiary standard is low. Of the eight
+comparable studies in Section~\ref{sec:related}, none reports a
+significance test, none reports an effect size, and none reports more
+than ten replications per condition. A learned method that is reported
+as beating a baseline by two points, based upon a single run, against
+a classical controller whose parameters are not stated, is not a
+result that a reader can act upon.
+
+\subsection{Research Questions}
+
+\textbf{RQ1.} Can a decentralized multi-agent PPO policy (i.e., one in
+which every UAV learns from local observations and sends no messages)
+reach the 90\% coverage criterion across obstacle densities from 0\%
+to 30\%?
+
+\textbf{RQ2.} How will it compare against tuned Boids and APF
+controllers under matched obstacle layouts, and will the comparison
+survive correction for multiple testing?
+
+\textbf{RQ3.} Will the controllers transfer to obstacle layouts that
+were unseen during development? In addition, how will they compare on
+the secondary measures that determine deployability (i.e., energy,
+collision risk, computational cost, load balance, and swarm-size
+scaling)?
+
+\subsection{Contributions}
+
+\begin{enumerate}
+    \item A four-way comparison of Boids, APF, a single-agent PPO
+    hybrid, and a parameter-shared multi-agent PPO policy. All four
+    will run on identical matched obstacle layouts, with 50
+    replications per condition, paired significance tests, effect
+    sizes, and bootstrap intervals. None of the comparable studies
+    surveyed will report the last three.
+    \item A working decentralized MARL coverage system that matches or
+    beats a tuned APF baseline. There are two design decisions that
+    make it learnable: 1. a per-agent reward that repairs credit
+    assignment; and 2. a rollout length short enough to provide PPO
+    with sufficient gradient updates.
+    \item A direct measurement of the credit-assignment problem that
+    the multi-agent literature describes. The authors held network,
+    budget, seed, and dynamics fixed, and changed only the reward
+    scheme. That change alone costs 30.6 percentage points of
+    coverage, which is larger than the gap between any two
+    controllers compared here.
+    \item Reporting of variance across training runs, which the
+    surveyed literature omits. In addition, we provide evidence that
+    both the variance and the parity with APF at intermediate density
+    represent artefacts of the training budget.
+    \item Evidence that percentage coverage over free cells is a
+    misleading metric when free area varies with obstacle density, and
+    absolute-cell accounting that will correct it.
+    \item A validation audit of the apparatus itself, with three
+    repaired defects, one retracted figure, and one withdrawn
+    experiment documented in Section~\ref{sec:validity}.
+\end{enumerate}
+
+%% ===================== RELATED WORK ============================
+\section{RELATED WORK}\label{sec:related}
+
+\textbf{Bio-inspired flocking.} Reynolds~\cite{reynolds1987}
+introduced Boids as a distributed model in which each agent will
+follow local rules that are computed from neighbors inside a
+perception radius, with no global state and no central controller. It
+represents the origin of the claim that coherent group behavior will
+emerge from purely local rules, which is the same claim that
+decentralized reinforcement learning makes. However, it was built for
+visual plausibility, and not for coverage. Left unmodified, its
+cohesion rule is harmful, due to the fact that agents which stay
+together will sweep the same cells. Therefore any coverage use will
+require a dispersion term. Recent
+surveys~\cite{xu2022,alqudsi2024,arshid2025} treat bio-inspired
+methods as the standard baseline for learned ones. Shang et
+al.~\cite{shang2025} come closest to a bio-inspired coverage method.
+However, their objective represents exploration efficiency, and not
+coverage at a fixed budget.
+
+\textbf{Artificial potential fields.} Khatib~\cite{khatib1986} treats
+the robot as a particle under attraction to its goal and repulsion
+from obstacles. It is fully local, it requires no map, and it will
+cost constant time per step. Therefore it represents the natural
+classical comparator for a learned local policy, and
+Choset~\cite{choset2001} places it within the wider coverage
+literature. Its known weakness is the local minimum in concave
+geometry. The escape remedy that is utilized will strongly determine
+measured performance, and papers will routinely under-specify it. Thus
+an APF baseline with a stated escape rule and a published sweep
+represents a harder comparator than the literature usually provides.
+Hickling et al.~\cite{hickling2025} show how the field now treats APF,
+due to the fact that they utilize an APF-derived reward to train a TD3
+policy, rather than utilizing APF as a controller. In addition,
+Du~\cite{du2023} provides a classical planning comparator based upon
+an enhanced A$^*$.
+
+\textbf{MARL for coverage, and the credit-assignment problem.}
+Schulman et al.~\cite{schulman2017} introduced PPO, which now
+represents the default policy-gradient method. Fusco et
+al.~\cite{fusco2025} state the central difficulty for the multi-agent
+case, i.e., that the joint action space will grow as $|A|^N$, which
+they call "impractical" for any significant number of agents. In
+addition, they state that full decentralization will scale, but that
+it will produce suboptimal actions and will converge poorly under high
+partial observability. They report training time rising from 0.065\,s
+at $16\times10^3$ cells to 3{,}354\,s at $64\times10^3$.
+
+There are two standard responses, and this project utilized both of
+them in turn. 1. The first will sidestep the joint action space with
+hierarchy or assignment, which is what most empirical work does. Each
+such choice will buy tractability by reintroducing something central.
+Yu et al.~\cite{yu2025} utilize event-triggered hierarchical RL, where
+a high-level module will assign regions and low-level policies will
+execute inside them. The assignment represents a central decision.
+Therefore the result speaks to hierarchical coordination, rather than
+to what independent agents will achieve. Leong et al.~\cite{leong2024}
+learn selection over a discretized set of candidate viewpoints, which
+bounds the action space. However, it presupposes a generator with
+global knowledge of the map. Xie et al.~\cite{xie2025} decompose and
+allocate cells centrally, which is efficient but is not decentralized
+in the sense at issue here. None of the three establishes whether
+agents acting on local input alone can cover an unknown area, due to
+the fact that in each case the hardest coordination decision is taken
+somewhere the agents are not. 2. The second response is
+\emph{parameter sharing}, in which one policy will be applied
+independently to every agent, so the action space stays
+$\text{Discrete}(|A|)$ while all agents learn. Only the second will
+leave the question intact, and therefore it represents the route that
+was taken here.
+
+Parameter sharing alone will not be sufficient, due to the fact that a
+shared policy trained on a shared team reward will suffer the
+credit-assignment problem. An agent's reward is dominated by the
+behavior of teammates that it does not control. Therefore the
+correlation between its own action and its own return is small, and it
+will learn very little. The pathology is well documented under the
+name of the "lazy agent", and there are two standard responses: 1.
+difference rewards and counterfactual baselines, as in
+COMA~\cite{foerster2018}; and 2. value decomposition, as in
+VDN~\cite{sunehag2018} and QMIX~\cite{rashid2018}. This literature is
+directly relevant here, due to the fact that
+Section~\ref{sec:hybrid_ablation} shows that the earlier hybrid failed
+for exactly this reason. In addition, Section~\ref{sec:reward} adopts
+the simplest effective remedy (i.e., each agent will be rewarded for
+the cells that it is first to visit).
+
+\textbf{Evaluation practice, and why numerical comparison is not
+available.} Replication counts across these papers are typically under
+ten, where they are stated at all. None will report a hypothesis test
+between its method and its baselines, none will report an effect size,
+and train/test separation over layouts is rare. Therefore a
+like-for-like coverage comparison is not possible. Fusco et al.\ will
+report no coverage percentage at all, due to the fact that their
+environment terminates on full exploration. Thus coverage represents
+100\% whenever an episode completes, and their metrics are energy,
+mission time, and reward. The problem recurs for three reasons. 1.
+Papers will measure different quantities. 2. They will utilize
+different termination rules, so fixed-budget and time-to-completion
+framings represent inverses of one another. 3. They differ in scale by
+more than an order of magnitude, and coverage is strongly sensitive to
+the agent-to-area ratio. Therefore Table~\ref{tab:related} compares
+experimental design and evidentiary standard, rather than headline
+numbers.
+
+\begin{table}[htb]
+\centering
+\caption{Experimental Design Compared Against Related Work.
+n/s = not stated.}
+\label{tab:related}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{llccc}
+\toprule
+\textbf{Study} & \textbf{Coverage metric} & \textbf{Dens.} &
+\textbf{Seeds} & \textbf{Sig.\,/\,ES} \\
+\midrule
+Reynolds~\cite{reynolds1987} & none (animation) & no & --- & no \\
+Fusco~\cite{fusco2025}       & none; energy, time & no & 1 & no \\
+Yu~\cite{yu2025}             & 3D region coverage & no & n/s & no \\
+Leong~\cite{leong2024}       & viewpoint coverage & no & n/s & no \\
+Xie~\cite{xie2025}           & reduction in grids & no & n/s & no \\
+Shang~\cite{shang2025}       & exploration effic. & no & n/s & no \\
+Hickling~\cite{hickling2025} & distance, makespan & no & n/s & no \\
+Du~\cite{du2023}             & path length & no & n/s & no \\
+\midrule
+\textbf{This work} & \textbf{\% free cells and absolute cells} &
+\textbf{4} & \textbf{50} & \textbf{yes} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+%% ===================== METHODOLOGY =============================
+\section{METHODOLOGY}\label{sec:methodology}
+
+\subsection{System Architecture}\label{sec:arch}
+
+Fig.~\ref{fig:sysarch} shows how the pieces will fit together. A
+single world holds the obstacle map, the shared visited map, and the
+six UAV positions. It will advance only when an action has been
+supplied for every agent. Therefore all six will move simultaneously
+within a timestep. The same world class serves all four controllers,
+and the same seed will produce the same obstacle layout for each of
+them. That is what makes the comparison "matched" rather than merely
+parallel.
+
+\begin{figure*}[t]
+    \centering
+    \includegraphics[width=0.84\textwidth]{figures/results/system_architecture.png}
+    \caption{System architecture. One world serves all four controllers
+    on identical seeded layouts, advancing only once all six actions
+    are supplied.}
+    \label{fig:sysarch}
+\end{figure*}
+
+\subsection{Environment Definition}\label{sec:env}
+
+The arena represents a $50\times50$ discrete grid, which was built in
+Python with Mesa~\cite{mesa}. At 3~m per cell the grid will cover
+$150\,\text{m}\times150\,\text{m}$ (i.e., approximately a residential
+block). Six UAVs start spread around a shared HOME point at grid
+center $(25,25)$, eight cells out on the four cardinals and
+$(\pm5,\pm5)$ on two diagonals, which reflects deployment from one
+launch site. In addition, a five-cell safe zone around HOME will be
+kept clear of obstacles.
+
+Early versions scattered single-cell obstacles at random, which
+produced environments that were nothing like a real search area.
+Therefore the generator was rewritten. It will now place rectangular
+building blocks three to eight cells on a side, with walls and L- and
+U-shaped structures, at four densities (i.e., 0\%, 10\%, 20\%, and
+30\% of grid area). Fig.~\ref{fig:arena} shows one such layout at
+20\%, with the swarm part-way through an episode.
+
+\begin{figure}[htb]
+    \centering
+    \includegraphics[width=\linewidth]{figures/methodology/scenario_arena.png}
+    \caption{The task. Six UAVs sweep a
+    $150\,\text{m}\times150\,\text{m}$ block at 20\% density, at step
+    110 of 700 with 30\% covered. Layout and paths are both real: the
+    deployed policy on a layout the experiments ran. Paths zigzag
+    because actions are sampled, not greedy
+    (Section~\ref{sec:eval}). Each agent sees only a window like the
+    one drawn, and nothing joins one agent to another.}
+    \label{fig:arena}
+\end{figure}
+
+Each episode will run 700 timesteps for every controller. Read against 3~m cells at one cell per step, that will scale to approximately 3~m/s and a 12-minute mission, which sits inside the endurance of a typical multirotor. However, that scaling represents an order-of-magnitude check and no more. The model is purely kinematic, with no inertia, turn radius, acceleration limit, or wind. In addition, diagonal moves will cover $\sqrt{2}$ cells per timestep, so implied speed will vary with heading. The figures show that the episode length is not absurd. However, they do not support a flight-time claim.
+Coverage represents the fraction of non-obstacle cells visited at least once,
+\begin{equation}\label{eq:coverage}
+    C = \frac{|\mathcal{V}|}{|\mathcal{F}|} \times 100\%
+\end{equation}
+with $\mathcal{V}$ the visited free cells and $\mathcal{F}$ all free
+cells. Section~\ref{sec:absolute} will report $|\mathcal{V}|$ directly
+alongside $C$, due to the fact that the denominator changes with
+density.
+
+\subsection{Justification of the 90\% Target}\label{sec:threshold}
+
+The criterion is based upon search and rescue planning, where the
+governing quantity represents probability of detection (i.e., a
+function of a coverage factor $C_{f} = n_{s}dW/A$ for $n_s$ searchers
+traveling distance $d$ with sweep width $W$ over area $A$).
+Perkins~\cite{perkins2013} states that a probability of detection of
+90\% will require $C_f = 1.2$, and he records that standard tactics
+will reach 63\%, 72\%, and 87\%. None of them reaches 90\%. Therefore
+the value represents a recognized and demanding planning target, and
+the same framework underpins the US National Search and Rescue
+Supplement~\cite{nss2018}. However, the construct differs from the one
+that is measured here, due to the fact that Eq.~\ref{eq:coverage} will
+count cell entry with a sensor that never fails. Thus it represents an
+upper bound on field performance. The criterion was fixed before any
+experiment was run, and it was not adjusted afterwards.
+
+\subsection{Observation Space}\label{sec:obs}
+
+Each agent will sense a $7\times7$ window centered on itself (i.e., a
+detection radius of three cells, or 9~m), which is realistic for a
+depth sensor such as the Intel RealSense L515. The window will encode
+obstacles as $-1.0$, unvisited free cells as $0.0$, visited cells as
+$1.0$, and other agents as $2.0$. Therefore it provides 49 values,
+plus two for normalized position (Fig.~\ref{fig:obs_window}). Writing
+$p_i=(r_i,c_i)$ for agent $i$'s cell and $\delta\in\{-3..3\}^2$ for an
+offset within the window,
+\begin{equation}\label{eq:obs}
+o_i[\delta]=
+\begin{cases}
+-1 & p_i{+}\delta \text{ obstacle or off-grid}\\
+\;\,2 & \text{occupied by another agent}\\
+\;\,1 & \text{visited by any agent}\\
+\;\,0 & \text{free and unvisited}
+\end{cases}
+\end{equation}
+with $o_i \in \mathbb{R}^{60}$ after appending $(r_i/G, c_i/G)$ and
+the nine memory features of Section~\ref{sec:memory}. Cells outside
+the grid will also be $-1$. Therefore an agent cannot distinguish the
+world boundary from an obstacle.
+
+The visited channel represents the swarm's shared record, and not the
+agent's private one, due to the fact that a cell will read $1.0$ once
+any agent has occupied it. An agent can tell from its window whether
+the ground ahead was already swept. However, it cannot tell by whom or
+when. This represents indirect coordination through a shared "trace",
+and on a real platform it would be provided by a shared occupancy
+grid, or by visible evidence of a prior pass. No agent will send or
+receive a message. Therefore the property under test is decentralized
+control without message passing. Complete informational isolation
+represents a stronger condition, and this design does not meet it. In
+addition, the channel is identical for Boids and APF, so it will
+advantage no one.
+
+\begin{figure}[htb]
+    \centering
+    \includegraphics[width=0.86\linewidth]{figures/methodology/fig_uav_observation_window.png}
+    \caption{The $7\times7$ observation window. Values are the same
+    for every controller; only the learned policy additionally
+    receives the nine memory features of Section~\ref{sec:memory}.}
+    \label{fig:obs_window}
+\end{figure}
+
+\subsubsection{Onboard memory features}\label{sec:memory}
+
+The sensor window will provide no gradient towards unexplored ground
+once the immediate neighborhood is swept, and a policy without one
+will perform no better than a random walk. Therefore each agent will
+maintain its own belief map of cells that it has sensed, and it will
+derive nine features from it. These are as follows: 1. four quadrant
+scores for remaining unexplored area; 2. a normalized vector and
+distance to the nearest cell that it believes to be unexplored; 3. the
+fraction of the arena that it has sensed; and 4. the fraction of the
+episode remaining. Two of the nine (i.e., the sensed fraction and the
+time remaining) are internal to the agent. The other seven will be
+derived from a target set that combines what this agent has sensed
+with the same shared visited record that the window already carries.
+Therefore they will extend its range, but they will introduce no
+mechanism that the window does not already utilize. They correspond to
+onboard map memory, which any real UAV will carry. The observation
+represents 60 values in total. Section~\ref{sec:ablation} will measure
+what these features are worth, due to the fact that they represent
+information which the classical controllers do not have. Thus the
+comparison against those controllers is not one of equal information.
+
+\subsection{Action Space}\label{sec:action}
+
+Each UAV will move one cell per timestep in one of eight directions
+(i.e., a first-order kinematic model with no inertia), which provides
+$\text{Discrete}(8)$ per agent. Obstacle avoidance will happen at the
+planning layer, due to the fact that cells containing obstacles are
+removed from the legal move set and each controller will then choose
+among the remainder. In addition, inertia, wind, and battery drain
+beyond the mission budget are not modeled.
+
+\subsection{Reward Function and Gain Selection}\label{sec:reward}
+
+Agent $i$ receives
+\begin{equation}\label{eq:reward}
+    r_{i,t} = w_{cov}\,\Delta v_{i,t} - w_{time}
+              + \mathbb{1}[\text{done}]\;w_{team}\,C_T/100
+\end{equation}
+where $\Delta v_{i,t}$ will count the cells \emph{agent $i$ was first
+to visit} at step $t$, and $C_T$ represents final swarm coverage.
+Rewarding own-first-visits, rather than the global new-cell count, is
+what makes the signal a function of the agent's own action. Therefore
+Section~\ref{sec:hybrid_ablation} will show what happens without it.
+
+The three gains were set by scale reasoning rather than by search, and
+the reasoning is worth stating, due to the fact that the relative
+magnitudes will matter more than the absolute values
+(Fig.~\ref{fig:reward}).
+
+\begin{figure}[htb]
+    \centering
+    \includegraphics[width=\linewidth]{figures/results/reward_structure.png}
+    \caption{What each reward term contributes to one agent over one
+    episode, on a symmetric log scale. The coverage term dominates by
+    more than an order of magnitude; the other two shape behaviour
+    without competing with it.}
+    \label{fig:reward}
+\end{figure}
+
+$w_{cov}=3.0$ and $w_{time}=0.05$ will set the exchange rate between
+finding new ground and spending time (i.e., one new cell is worth 60
+steps of the time penalty). This must be large, due to the fact that
+an agent which trades a new cell for a shorter path will defeat the
+objective. However, it must also be finite, since otherwise a policy
+that stalls indefinitely near unexplored ground will incur no cost.
+Sixty steps represents approximately a tenth of the episode, which
+makes loitering expensive without allowing the penalty to compete with
+the coverage signal. Over a full episode the coverage term will
+accumulate to approximately $750$, against $-35$ from the time
+penalty. Therefore the ratio is deliberately "lopsided".
+
+$w_{team}=2.0$ will apply once, at termination, scaled by final swarm
+coverage. Its purpose is to retain a shared interest, so that agents
+will not compete for the same cells. Its magnitude is set so that it
+cannot dominate, i.e., at most $2.0$ against an accumulated $\approx
+750$, which represents about $0.3\%$ of return. Therefore it
+represents a "tie-breaker" between otherwise equivalent policies, and
+not a driver. Setting it much larger will reintroduce the
+credit-assignment problem that the per-agent term exists to solve, due
+to the fact that a large shared terminal payment is again mostly
+determined by teammates.
+
+\subsection{PPO Architecture}\label{sec:ppo}
+
+All six UAVs will be driven by one shared policy, which acts on each
+agent's own local observation (Fig.~\ref{fig:marlarch}). No agent is
+hand-coded, and no agent will send a message.
+
+This represents centralized training with decentralized execution.
+Training will pool all six agents' experience into one gradient
+update, which could not be done onboard. However, execution is local.
+Each agent will run its own copy of the network on its own $7\times7$
+observation, nothing is transmitted, and no controller is in the loop.
+A deployed swarm will require the shared network to be installed
+before flight, and it will be independent after that. In addition,
+parameter sharing will keep the action space at $\text{Discrete}(8)$
+rather than $8^6 = 262{,}144$, which represents the "scaling wall"
+that Fusco et al.~\cite{fusco2025} describe. A naive joint-action
+formulation hit it directly during this project, due to the fact that
+the policy collapsed onto a single repeated action and never
+recovered.
+
+\begin{figure}[htb]
+    \centering
+    \includegraphics[width=0.90\linewidth]{figures/results/marl_architecture.png}
+    \caption{Parameter-shared multi-agent PPO. One network produces an
+    action for each agent from that agent's own observation, and each
+    agent's experience is a separate sample for the same update.}
+    \label{fig:marlarch}
+\end{figure}
+
+The network represents a $[256,256]$ MLP with separate policy and
+value heads (i.e., the Stable-Baselines3~\cite{sb3} \texttt{MlpPolicy}
+default). Six agents in each of eight parallel worlds will present 48
+agent-slots to the learner. Therefore one policy update will draw upon
+all six agents' experience simultaneously.
+
+\subsection{Training Procedure}\label{sec:training}
+
+Algorithm~\ref{alg:train} states the loop. The centralized step
+represents line~\ref{ln:update}, which will pool all $NW$ agent-slots
+into one gradient update. Nothing else will cross between agents. In
+addition, at execution only lines~\ref{ln:obs}--\ref{ln:act} will run,
+on each agent's own copy of $\pi_\theta$.
+
+\begin{algorithm}[htb]
+\caption{Parameter-shared MARL training (CTDE)}
+\label{alg:train}
+\begin{algbody}
+\alplain{\alkw{Input:} density $d$, budget $T$, seed pool
+  $\mathcal{S}_A$, $W$ worlds, $N$ agents}
+\alplain{\alkw{Output:} one shared policy $\pi_\theta$}
+\vspace{1pt}\hrule\vspace{2pt}
+\albox{initialise $\pi_\theta$, a $[256,256]$ MLP shared by all agents}
+\albox{$w_1..w_W \leftarrow$ worlds at density $d$, seeds from
+  $\mathcal{S}_A$}
+\albox{$t \leftarrow 0$}
+\albox{\alkw{while} $t < T$ \alkw{do}}
+\albox{\alind $\mathcal{B} \leftarrow \emptyset$}
+\albox{\alind \alkw{for} $n_{steps}$ \alkw{do}}
+\albox{\alind\alind \alkw{foreach} world $w$, agent $i \in 1..N$
+  \alkw{do}}
+\albox{\label{ln:obs}\alind\alind\alind $o_i \leftarrow
+  \textsc{Observe}(w,i)$ \alcom{Eq.\,\ref{eq:obs}}}
+\albox{\label{ln:act}\alind\alind\alind $a_i \sim
+  \pi_\theta(\cdot \mid o_i)$ \alcom{sampled, not greedy}}
+\albox{\alind\alind $\mathbf{r},\,done \leftarrow
+  \textsc{Step}(w,\mathbf{a})$ \alcom{all $N$ move together}}
+\albox{\alind\alind $\mathcal{B} \leftarrow \mathcal{B} \cup
+  \{(o_i,a_i,r_i)\}_{i=1}^{N}$ \alcom{$r_i$ own-first, Eq.\,\ref{eq:reward}}}
+\albox{\alind\alind \alkw{if} $done$ \alkw{then} reset $w$ with a fresh
+  seed}
+\albox{\label{ln:update}\alind $\theta \leftarrow
+  \textsc{PPO-Update}(\theta, \mathcal{B})$
+  \alcom{pools all $NW$ slots}}
+\albox{\alind $t \leftarrow t + N W n_{steps}$}
+\albox{\alkw{return} $\pi_\theta$}
+\end{algbody}
+\end{algorithm}
+
+Hyperparameters:
+$n_{steps}=64$ per slot (i.e., 3{,}072 samples per update), batch 512,
+four epochs, $\gamma=0.99$, $\lambda=0.95$, clip 0.2, entropy 0.005,
+learning rate $5\times10^{-4}$, one million agent-steps per density,
+$W=8$, and $N=6$. Training layouts will be drawn from Seed Set A only.
+
+
+Rollout length represented the decisive hyperparameter. With 48
+agent-slots, $n_{steps}=256$ will yield 12{,}288 samples per update.
+However, it provides only approximately forty gradient updates per
+500k steps, which is far too few for PPO to converge. Therefore
+coverage will stall near the random-walk level of 50\%, and it will
+not improve with further training. Shortening the rollout to 64
+provides approximately 160 updates over the same sample budget, and
+that is what makes the task learnable. The effective number of updates
+will fall as the slot count rises. Thus anyone scaling parameter
+sharing to many agents will have to compensate for it.
+
+\textbf{Training cost.} On four CPU threads of an Apple M1 the
+implementation will sustain approximately 11{,}400 agent-steps per
+second. Therefore one million will take 1.5 minutes, and the
+four-density set approximately six, with no GPU. Fusco et
+al.~\cite{fusco2025} report 3{,}354\,s for one run at $64\times10^3$
+cells. The environments differ too much for a direct comparison.
+However, parameter sharing will evidently keep a decentralized policy
+within minutes of laptop compute at this scale. In addition, the
+classical controllers will require no training at all, and that
+asymmetry belongs in any deployment decision.
+
+\subsection{Evaluation Procedure}\label{sec:eval}
+
+Sampling at line~\ref{ln:act} represents a property of the deployed
+controller, and not exploration noise that was left switched on. Six
+agents will share one network. Therefore a deterministic argmax will
+make every agent in an identical local situation choose the identical
+action, which collapses the swarm into one repeated move and costs
+almost ninety points of coverage when it is measured directly.
+Sampling will break the symmetry between otherwise indistinguishable
+agents, and it represents the mechanism by which one shared network
+will produce six behaviors. A fielded swarm would run the same
+stochastic policy. In addition, sampling is seeded from the episode
+seed, so a seed will reproduce the identical episode.
+
+\subsection{Classical-Controller Implementation}\label{sec:classical}
+
+\textbf{Boids}~\cite{reynolds1987} will score neighboring cells as $s
+= w_{cov}c_{cov} + w_{sep}c_{sep} + \mathcal{U}(-0.1,0.1)$, where
+$c_{cov}$ equals 2 for an unvisited cell and $-1$ for a visited one,
+and $c_{sep}$ represents the normalized distance to the nearest agent.
+Agents will move sequentially within a timestep. Therefore each will
+see where the others have gone, which produces spatial separation
+without communication.
+
+\textbf{APF}~\cite{khatib1986} scores a candidate cell as
+\begin{equation}\label{eq:apf_score}
+    s = c_{cov}
+      - w_{rep} \!\!\sum_{o \in \mathcal{O}_{n}} \frac{k_{rep}}{d_o^2}
+      + c_{sep} + \mathcal{U}(-0.1, 0.1)
+\end{equation}
+over obstacles within radius $r_{rep}$, with $c_{cov}$ of 5.0 for a
+cell unvisited by any agent, 1.0 for one absent from the agent's own
+memory, and $-2.0$ otherwise, and $w_{rep}=0.3$.
+Section~\ref{sec:sweep} will sweep the repulsion term of
+Eq.~\ref{eq:apf_score}. An escape rule will fire a random move to an
+unvisited neighbor after three stalled steps, and that is what
+prevents the local-minimum collapse for which the method is known.
+Rather than assert that $k_{rep}=1.5$ and $r_{rep}=2$ are well chosen,
+Section~\ref{sec:sweep} will report the coverage surface over both.
+
+\subsection{Experimental Design and Statistical Methodology}
+\label{sec:stats}
+
+The experiment crosses four controllers with four densities and two
+seed sets (i.e., 32 conditions, 50 seeds each, and 1{,}600 runs). Seed
+Set~A (0--49) was utilized for development and training, and Seed
+Set~B (50--99) was reserved and utilized only at the end. Every
+controller will see the identical 50 layouts within a cell, as
+Algorithm~\ref{alg:eval} states. Each will pass its seed to the same
+obstacle generator, and the layouts are regenerated and compared cell
+by cell before any test runs. Therefore this is what licenses the
+paired design. The implementation represents Python~3.13 with
+Mesa~\cite{mesa}, Stable-Baselines3~\cite{sb3}, and Gymnasium. In
+addition, the bootstrap is seeded at 20260729, and code, results, and
+checkpoints will accompany this report.
+
+\begin{algorithm}[htb]
+\caption{Matched-layout evaluation}
+\label{alg:eval}
+\begin{algbody}
+\alplain{\alkw{Input:} controllers $\mathcal{C}$, densities
+  $\mathcal{D}$, seed sets $\mathcal{S}_A,\mathcal{S}_B$}
+\vspace{1pt}\hrule\vspace{2pt}
+\albox{\alkw{foreach} $d \in \mathcal{D}$, $\mathcal{S} \in
+  \{\mathcal{S}_A,\mathcal{S}_B\}$, seed $s \in \mathcal{S}$ \alkw{do}}
+\albox{\alind $M_s \leftarrow \textsc{GenObstacles}(d,s)$;
+  \alkw{assert} identical for every $c \in \mathcal{C}$}
+\albox{\alind $C[c,s] \leftarrow \textsc{Run}(c,M_s,700)$
+  \alkw{for each} $c \in \mathcal{C}$}
+\albox{\alkw{foreach} pair $(c_1,c_2)$, each $(d,\mathcal{S})$
+  \alkw{do}}
+\albox{\alind Wilcoxon on $\{C[c_1,s]-C[c_2,s]\}_s$; $r_{rb}$,
+  Cliff's $\delta$, bootstrap CI}
+\albox{Holm--Bonferroni within each comparison family}
+\end{algbody}
+\end{algorithm}
+
+There are three measures in Table~\ref{tab:extended} that each admit
+more than one reasonable definition, and every controller will be
+measured on the same one. With $u_i$ the distinct cells agent $i$
+occupied,
+\begin{equation}\label{eq:secondary}
+L=\ell\!\!\sum_{i=1}^{N}\sum_{t}\lVert p_{i,t}-p_{i,t-1}\rVert_2,
+\quad
+\mathcal{G}=\frac{2\sum_{k} k\,u_{(k)}}{N\sum_{k}u_{k}}-\frac{N{+}1}{N}
+\end{equation}
+with $\ell=3$~m per cell, $u_{(k)}$ the $k$th smallest $u_i$, and
+$\mathcal{G}=0$ perfectly even. A "near-miss" represents a pair within
+one cell by Euclidean distance, which will be counted before each
+move.
+
+Twenty-seven of the 32 condition-level coverage distributions will
+depart from normality under Shapiro-Wilk at $\alpha = 0.05$. Therefore
+rank-based tests are primary. The design is matched, and this was
+verified rather than assumed, due to the fact that for each seed the
+obstacle map was regenerated independently through the Mesa generator
+and through both learned environments, and then compared cell by cell.
+The maps are identical for every sampled seed at every density.
+Therefore observation $i$ in each sample will refer to the same
+environment, and the paired Wilcoxon signed-rank test is correct.
+Mann-Whitney $U$~\cite{mann1947} and Welch's $t$ will be reported as
+robustness checks. Holm-Bonferroni correction~\cite{holm1979} will be
+applied within each family. Effect sizes represent matched-pairs
+rank-biserial correlation $r_{rb}$ and Cliff's
+$\delta$~\cite{cliff1993}, and intervals represent bootstrap
+percentile intervals from 10{,}000 resamples~\cite{efron1979}. In
+addition, all error bars in this report are 95\% confidence intervals
+on the mean, rather than standard deviations.
+
+%% ===================== RESULTS =================================
+\section{RESULTS}\label{sec:results}
+
+Table~\ref{tab:main_results} will report final coverage for every
+controller at every obstacle density on both seed sets, with the
+number of runs reaching the 90\% target given in parentheses.
+
+\begin{table}[htb]
+\centering
+\caption{Final Coverage (\%), Mean $\pm$ SD over 50 Seeds, with Runs
+Reaching the 90\% Target in Parentheses}
+\label{tab:main_results}
+\scriptsize
+\setlength{\tabcolsep}{0.8pt}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{@{}l@{\hspace{2pt}}lcccc@{}}
+\toprule
+\textbf{Set} & \textbf{Controller} & \textbf{0\%} & \textbf{10\%} &
+\textbf{20\%} & \textbf{30\%} \\
+\midrule
+\multirow{4}{*}{A}
+ & Boids  & $87.9\pm4.5$\,(17) & $86.7\pm4.8$\,(12) & $85.7\pm5.6$\,(12) & $84.6\pm6.6$\,(9) \\
+ & APF    & $91.4\pm3.6$\,(36) & $92.5\pm3.9$\,(39) & $94.2\pm3.5$\,(42) & $\mathbf{94.7\pm2.7}$\,(47) \\
+ & Hybrid & $85.8\pm5.7$\,(13) & $85.0\pm5.5$\,(9)  & $84.8\pm7.0$\,(13) & $83.8\pm6.1$\,(10) \\
+ & MARL   & $\mathbf{96.1\pm1.5}$\,(50) & $\mathbf{93.7\pm2.5}$\,(45) & $93.5\pm3.7$\,(41) & $90.8\pm5.7$\,(35) \\
+\midrule
+\multirow{4}{*}{B}
+ & Boids      & $86.6\pm4.6$\,(12) & $86.8\pm6.4$\,(18) & $87.5\pm4.9$\,(17) & $83.6\pm6.7$\,(7) \\
+ & APF        & $90.5\pm4.1$\,(27) & $93.0\pm3.8$\,(41) & $\mathbf{94.5\pm2.8}$\,(47) & $\mathbf{94.0\pm4.4}$\,(42) \\
+ & Hybrid     & $85.6\pm5.2$\,(11) & $85.9\pm4.7$\,(8)  & $84.4\pm6.3$\,(9)  & $82.2\pm6.8$\,(5) \\
+ & MARL   & $\mathbf{95.5\pm1.8}$\,(49) & $\mathbf{93.8\pm2.7}$\,(46) & $92.8\pm3.8$\,(36) & $93.1\pm3.8$\,(41) \\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+\begin{figure*}[t]
+    \centering
+    \includegraphics[width=0.84\textwidth]{figures/results/four_way_coverage_ci.png}
+    \caption{Coverage against obstacle density for all four
+    controllers, on the development and held-out seed sets. Error bars
+    are 95\% bootstrap confidence intervals on the mean. Only MARL and
+    APF clear the target, crossing between 10\% and 20\% on both sets.}
+    \label{fig:fourway}
+\end{figure*}
+
+\subsection{Meeting the 90\% Criterion}
+
+Both the MARL policy and APF will exceed 90\% by mean in all eight of
+their cells. One-sided Wilcoxon tests against 90\%, Holm-corrected
+over all 32 cells, will confirm that the excess is significant in
+seven cells each. The exceptions represent the cells where the mean
+sits closest to the line, i.e., MARL at 30\% density on the
+development set (90.84\%, Holm $p = 0.499$) and APF at 0\% density on
+the held-out set (90.46\%, Holm $p = 1.000$). Boids will fall
+significantly short in seven cells, and it is indistinguishable from
+90\% in one. In addition, the hybrid will fall short in all eight.
+Therefore only the two leading controllers will meet the criterion at
+all, and neither dominates the other on it.
+
+\subsection{Pairwise Comparison}\label{sec:pairwise}
+
+\begin{table}[htb]
+\centering
+\caption{MARL Against Each Baseline, Paired Wilcoxon Signed-Rank,
+Holm-Corrected. Difference in percentage points.}
+\label{tab:stats}
+\scriptsize
+\setlength{\tabcolsep}{1.6pt}
+\begin{tabular}{lllrcrr}
+\toprule
+\textbf{Set} & \textbf{Dens.} & \textbf{Comparison} & \textbf{Diff.} &
+\textbf{95\% CI} & \textbf{Holm $p$} & \textbf{$r_{rb}$} \\
+\midrule
+\multirow{6}{*}{A}
+& 0\%  & MARL vs APF    & $+4.71$  & [3.67, 5.81]        & $<$0.0001 & $+0.94$ \\
+& 10\% & MARL vs APF    & $+1.21$  & [$-0.09$, 2.53]     & 0.5523    & $+0.24$ \\
+& 20\% & MARL vs APF    & $-0.65$  & [$-2.02$, 0.72]     & 0.6892    & $-0.20$ \\
+& 30\% & MARL vs APF    & $-3.82$  & [$-5.59$, $-2.15$]  & 0.0004    & $-0.64$ \\
+& 0\%  & MARL vs Boids  & $+8.19$  & [7.00, 9.40]        & $<$0.0001 & $+1.00$ \\
+& 0\%  & MARL vs Hybrid & $+10.28$ & [8.72, 11.95]       & $<$0.0001 & $+1.00$ \\
+\midrule
+\multirow{6}{*}{B}
+& 0\%  & MARL vs APF    & $+5.02$  & [3.72, 6.31]        & $<$0.0001 & $+0.87$ \\
+& 10\% & MARL vs APF    & $+0.82$  & [$-0.59$, 2.30]     & 0.9649    & $+0.11$ \\
+& 20\% & MARL vs APF    & $-1.73$  & [$-2.99$, $-0.51$]  & 0.2702    & $-0.33$ \\
+& 30\% & MARL vs APF    & $-0.90$  & [$-2.45$, 0.68]     & 0.7116    & $-0.24$ \\
+& 20\% & MARL vs Boids  & $+5.33$  & [3.69, 7.06]        & $<$0.0001 & $+0.77$ \\
+& 20\% & MARL vs Hybrid & $+8.41$  & [6.41, 10.49]       & $<$0.0001 & $+0.90$ \\
+\bottomrule
+\end{tabular}
+
+\vspace{0.3em}
+{\footnotesize The full 48-comparison table, including every
+MARL-vs-Boids and MARL-vs-Hybrid cell and the Mann-Whitney and Welch
+robustness checks, is in the supplementary output.}
+\end{table}
+
+There are three findings that follow. 1. MARL will beat APF in open
+terrain by 4.71 and 5.02 points, and both are highly significant with
+near-maximal effect sizes. 2. The two cannot be separated at
+intermediate density, due to the fact that at 10\% and 20\% no
+comparison will survive Holm correction on either seed set. 3. APF
+will keep an edge at the hardest density by 3.82 points with a medium
+effect. However, this occurs only on the development set, since the
+same comparison on the held-out set represents 0.90 points and is not
+significant. Therefore the advantage is not robust across layout
+samples. In addition, against the two weaker baselines MARL will win
+everywhere by 5.3 to 10.9 points, with $r_{rb}$ from 0.75 to 1.00, and
+all sixteen will survive correction.
+
+\subsection{Generalisation}\label{sec:generalisation}
+
+Seed Set~B consists of layouts that are distinct from Set~A, which was
+verified by regenerating and comparing maps. Changes from A to B for
+the MARL policy represent $+0.60$, $-0.11$, $+0.76$, and $-2.31$
+percentage points at 0--30\% density. No controller will change by
+more than 2.31 points, and no difference will survive Holm correction.
+The policy was trained only on Set~A layouts. Therefore this
+represents a genuine held-out test, and it shows no overfitting to the
+training maps. In addition, at 30\% density it will perform
+\emph{better} on the unseen set. At 0\% density there are no
+obstacles, so the two sets represent the same environment, and any
+difference there will reflect only the stochastic policy.
+
+\subsection{Absolute Cells Against Percentage}\label{sec:absolute}
+
+
+Absolute-cell accounting will resolve an ambiguity that the earlier
+iteration of this project could not settle. APF's percentage coverage
+will rise by 3.3 points from 0\% to 30\% obstacles, which invites the
+reading that structured obstacles help it search. However, the
+absolute counts will contradict that, and they were recovered over the
+same 50 seeds by multiplying each run's coverage by the free area of
+its layout. APF will cover 640 fewer cells at 30\% than at 0\% (i.e.,
+a fall of 28\%), Boids 727 fewer (i.e., 33\%), and MARL 824 fewer
+(i.e., 34\%). Therefore every controller will cover less ground as
+density rises, while the free area itself shrinks from 2{,}500 to
+1{,}737 cells (i.e., a fall of 31\%). APF's percentage will rise only
+due to the fact that its absolute coverage falls more slowly than the
+denominator. Thus no controller will become a better searcher in
+cluttered terrain, and APF will simply degrade most gracefully. In
+addition, percentage coverage alone represents a misleading metric
+across varying free area, and reporting both represents the correct
+practice.
+
+Fig.~\ref{fig:traj_30} will show what that difference looks like on
+the ground, i.e., three controllers sweeping one identical 20\%
+layout, where APF's corridor-following and MARL's outward partition
+are visible as search patterns rather than as summary statistics.
+
+\begin{figure*}[t]
+    \centering
+    \includegraphics[width=0.84\textwidth]{figures/results/trajectories_four_way.png}
+    \caption{Swarm trajectories on one identical layout at 20\%
+    obstacle density. Boids doubles back in open areas; APF follows
+    the corridors between buildings; the MARL policy sweeps
+    outward and partitions the arena without communicating.
+    $\star$ marks HOME. Equivalents at every density are in the
+    supplementary material.}
+    \label{fig:traj_30}
+\end{figure*}
+
+%% ===================== EXTENDED ANALYSIS =======================
+\section{EXTENDED ANALYSIS}\label{sec:extended}
+
+Coverage alone represents a poor guide to field viability. Therefore,
+following supervisory feedback, further analyses were run at the same
+700-step budget on 50 matched seeds. The exceptions represent the
+swarm-size and hybrid sweeps, which will require a run per
+configuration and will utilize 15.
+
+\begin{table}[htb]
+\centering
+\caption{Secondary Measures, Mean over 50 Seeds, defined at
+Eq.~\ref{eq:secondary}. Near-misses are a proximity proxy, not
+observed collisions. $^\dagger$Per-step cost re-measured for all four
+on one machine; only the ordering is meaningful.}
+\label{tab:extended}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{llcccc}
+\toprule
+\textbf{Measure} & \textbf{Controller} & \textbf{0\%} & \textbf{10\%} &
+\textbf{20\%} & \textbf{30\%} \\
+\midrule
+\multirow{4}{*}{Path length}
+ & Boids  & 14913 & 14860 & 14819 & 14747 \\
+ & APF    & 14946 & 14837 & 14723 & 14582 \\
+ & Hybrid & 13927 & 12744 & 12690 & 13505 \\
+ & MARL   & 15240 & 14399 & 13696 & 11950 \\
+\midrule
+\multirow{4}{*}{Gini}
+ & Boids  & 0.067 & 0.077 & 0.087 & 0.103 \\
+ & APF    & 0.029 & 0.039 & 0.050 & 0.083 \\
+ & Hybrid & 0.197 & 0.228 & 0.239 & 0.244 \\
+ & MARL   & 0.058 & 0.051 & 0.064 & 0.103 \\
+\midrule
+\multirow{4}{*}{Near-misses}
+ & Boids  & 1244.4 & 1088.4 & 888.9 & 701.5 \\
+ & APF    & 1245.4 & 1109.4 & 938.7 & 606.6 \\
+ & Hybrid & 0.8    & 0.9    & 0.7   & 0.8   \\
+ & MARL   & 47.8   & 55.6   & 50.1  & 69.6  \\
+\midrule
+\multirow{4}{*}{ms\,/\,step$^\dagger$}
+ & Boids  & 0.085 & 0.212 & 0.327 & 0.431 \\
+ & APF    & 0.358 & 0.581 & 0.652 & 0.776 \\
+ & Hybrid & 0.412 & 0.418 & 0.408 & 0.392 \\
+ & MARL   & 0.728 & 0.889 & 0.702 & 0.683 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Load balance.} APF will spread work most evenly, MARL second,
+and Boids third. However, the hybrid is far worse, and the per-agent
+breakdown explains why. At 20\% obstacles its agents will contribute
+0.4\%, 19.6\%, 19.7\%, 20.9\%, 19.6\%, and 19.8\% of unique coverage.
+Agent~0 represents the only one under policy control, and it will
+account for 0.4\% against a balanced 16.7\%. MARL will show no such
+pathology, and it will reach near-APF balance with no agent hand-coded
+to do so, due to the fact that each is rewarded for its own
+contribution.
+
+\textbf{Proximity events.} A "near-miss" will proxy collision risk,
+and it will count no collisions, due to the fact that the grid
+provides a vehicle with no body. Therefore the measure will capture
+how often a real airframe would have had to give way. MARL will record
+approximately twenty times fewer than either classical controller,
+while covering more ground. However, the hybrid's near-zero figure
+comes from elsewhere, since when it is read together with the
+load-balance result, it describes its single learned agent staying out
+of the way.
+
+\textbf{Computational cost.} Boids and APF represent $O(N^2)$ per
+timestep, due to the fact that each agent will check every other. A
+shared policy represents $O(N)$ (i.e., one forward pass each). The
+constants will reflect that, since the classical pair will rise with
+density while the learned ones will stay flat. However, at six agents
+MARL is still the dearest of the four, due to the fact that a forward
+pass will cost more than scanning five neighbors. Therefore the
+scaling favors it, and at this size it will buy coverage with compute.
+
+\textbf{Swarm size.} All four controllers were run at 3, 6, 9, and 12
+agents at 20\% density over 15 seeds (Table~\ref{tab:swarm}). MARL and
+the hybrid were trained at six agents. Therefore other sizes represent
+a transfer test, and the shared-policy architecture is what makes this
+possible at all, due to the fact that one network will apply to any
+swarm size without retraining.
+
+\begin{table}[htb]
+\centering
+\caption{Coverage and Near-Misses by Swarm Size, 20\% Obstacles,
+15 Seeds. MARL and the hybrid are six-agent policies tested at other
+sizes. All four columns count a near-miss identically: Euclidean
+radius one cell, sampled before each step.}
+\label{tab:swarm}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lcccc|cccc}
+\toprule
+& \multicolumn{4}{c|}{Coverage (\%)} & \multicolumn{4}{c}{Near-misses} \\
+$N$ & Boids & APF & Hyb. & MARL & Boids & APF & Hyb. & MARL \\
+\midrule
+3  & 63.5 & 68.9 & 49.4 & \textbf{73.6} & 185  & 175  & 2.2  & 5    \\
+6  & 85.2 & 93.5 & 82.6 & \textbf{93.6} & 827  & 910  & 20.9 & 52   \\
+9  & 93.9 & \textbf{99.0} & 92.8 & 98.9 & 2312 & 2059 & 55.7 & 200  \\
+12 & 97.7 & \textbf{99.7} & 97.3 & 99.2 & 3845 & 3819 & 92.9 & 300  \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+There are two things that stand out. 1. The MARL policy will lead at
+three agents by 4.7 points over APF and by 10.1 over Boids, which
+represents the condition where coordination matters most, due to the
+fact that there is least redundancy to hide a poor sweep. It will
+converge with APF at six and nine, and it will fall slightly behind at
+twelve, where the arena is saturated and any reasonable controller
+will approach the ceiling. 2. Returns will fall off past nine agents
+for every controller, while near-misses will rise four- to sixfold
+from six to twelve (Fig.~\ref{fig:sensitivity}). Therefore six agents
+sits on the steep part of the curve, where coordination differences
+will be amplified. In addition, across all sizes the learned
+controllers will record twelve to thirty-four times fewer near-misses
+than the classical ones.
+
+\begin{figure*}[t]
+    \centering
+    \includegraphics[width=0.84\textwidth]{figures/extended/uav_count_sensitivity_all3.png}
+    \caption{Coverage and near-misses against swarm size at 20\%
+    density, 15 seeds, the same runs as Table~\ref{tab:swarm}. The
+    learned controllers are dashed: both were trained at six agents
+    and tested outside that configuration at every other size. Log
+    axis on the right, where they stay about an order of magnitude
+    below the classical pair throughout.}
+    \label{fig:sensitivity}
+\end{figure*}
+
+\textbf{Moving obstacles.} With obstacles relocating every 50 steps at
+20\% density, APF will fall from 94.0\% to 85.9\% as the moving share
+goes from none to half. However, Boids will drop only from 85.9\% to
+82.8\%. APF will require a field that is consistent long enough to
+guide an agent through, whereas Boids will recompute each step. The
+learned policies were not retrained under this perturbation. Therefore
+this covers the classical pair only.
+
+\subsection{Information Asymmetry: the Memory Ablation}
+\label{sec:ablation}
+
+The learned controller will carry nine onboard-memory features
+(Section~\ref{sec:memory}) that Boids and APF do not have. Rather than
+declare this as a caveat, the authors measured it. An otherwise
+identical policy was trained with those features zeroed, which leaves
+it exactly the information that the classical controllers will receive
+(i.e., a $7\times7$ sensed window and its own position).
+
+\begin{table}[htb]
+\centering
+\caption{Memory-Feature Ablation, 20\% Density, 50 Matched Seeds. The
+Ablated Policy Keeps the Same 60-Dimensional Vector With the Nine
+Memory Features Held at Zero}
+\label{tab:ablation}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Configuration} & \textbf{Steps} & \textbf{Coverage (\%)} &
+\textbf{$\geq$90\%} \\
+\midrule
+MARL, memory     & 1.00M & $93.6\pm3.7$ & 41/50 \\
+MARL, memory     & 1.85M & $98.8\pm1.0$ & 50/50 \\
+MARL, no memory  & 1.00M & $89.6\pm4.6$ & 31/50 \\
+MARL, no memory  & 1.85M & $90.0\pm4.2$ & 29/50 \\
+APF (same information) & --- & $94.2\pm3.5$ & 42/50 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+At a matched budget of one million agent-steps the memory features are
+worth $+4.00$ percentage points (i.e., paired Wilcoxon, $p<0.0001$,
+$r_{rb}=0.72$), and without them the policy will reach 89.6\% against
+APF's 94.2\%. Therefore on equal information and equal training the
+classical controller will win, and it will still win at 1.85M ($-4.22$
+pp, $p<0.0001$).
+
+Running both arms on to 1.85M will separate two explanations that the
+single-budget comparison cannot. The memory-free policy will gain
+nothing from the extra 850k steps ($+0.43$ pp, $p=0.83$), due to the
+fact that it has converged. However, the memory policy will gain
+$+5.26$ pp over the same interval and will reach 98.8\%. Therefore the
+gap widens from 4.00 to 8.83 points ($r_{rb}=1.00$). Extra training
+will not close it, which rules out the "head-start" explanation. What
+the features will change is what the architecture can represent from
+local sensing alone, i.e., a $7\times7$ window and a position alone
+will not reach the target reliably.
+
+\subsection{Credit Assignment Measured Directly}
+\label{sec:credit}
+
+Section~\ref{sec:reward} will reward each agent for the cells that it
+is first to visit. The alternative that the literature warns against
+represents the naive shared reward, in which every agent will receive
+the global new-cell count. Difference rewards~\cite{foerster2018} and
+value decomposition~\cite{sunehag2018},~\cite{rashid2018} exist to
+repair that arrangement. In addition, it can be run here as a
+controlled experiment, due to the fact that the network, budget, seed,
+observation, and dynamics will all stay fixed, and only the reward
+scheme will move.
+
+The shared-reward policy will reach $63.0\pm6.3\%$ against
+$93.6\pm3.7\%$ for the per-agent reward, which represents a gap of
+$30.60$ percentage points ($p<10^{-14}$, $r_{rb}=1.00$), and not one
+of its fifty runs will reach the target. Therefore on this task credit
+assignment will decide whether the controller works at all, due to the
+fact that on the shared reward it will lose to every baseline. In
+addition, it accounts for the hybrid in
+Section~\ref{sec:hybrid_ablation} without appeal to its architecture,
+since the hybrid utilized exactly this reward.
+
+\subsection{Training-Seed Variance and Budget}\label{sec:seedvar}
+
+Every MARL figure that is reported above comes from one training run
+at PPO seed 0. Fifty evaluation seeds will control layout variance.
+However, they say nothing about variance across training runs.
+Therefore three further policies were trained at seeds 1, 2, and 3
+under an identical budget, and they were evaluated on the same fifty
+layouts (Table~\ref{tab:seedvar}).
+
+\begin{table}[htb]
+\centering
+\caption{Coverage by PPO Training Seed, 20\% Density, 50 Matched
+Evaluation Seeds Each. APF Scores 94.2\% on the Same Layouts.
+SD$_{\text{seed}}$ is Across the Four Means, not Across Runs}
+\label{tab:seedvar}
+\scriptsize
+\setlength{\tabcolsep}{2pt}
+\begin{tabular}{lccccccc}
+\toprule
+\textbf{Budget} & \textbf{s0} & \textbf{s1} & \textbf{s2} &
+\textbf{s3} & \textbf{Mean} & \textbf{SD$_{\text{seed}}$} &
+\textbf{$\geq$90\%} \\
+\midrule
+1.00M & 93.55 & 92.98 & 91.08 & 85.75 & 90.84 & 3.55 & 122/200 \\
+1.85M & 98.81 & 98.87 & 96.81 & 94.69 & 97.30 & 1.98 & 193/200 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+At 1.00M the spread is wide, i.e., 7.8 points between the best and
+worst seed, and seed 0 represents the best of the four. Therefore the
+headline MARL numbers will sit at the top of their distribution, and
+not in the middle of it. A single fresh training run at 20\% density
+will average 90.8\%, with a standard deviation of 5.0 points across
+the 200 individual runs. That will put it behind APF.
+
+The 1.85M row will identify the cause. The across-seed standard
+deviation will fall from 3.55 to 1.98 points, the worst seed will rise
+to 94.7\% and will overtake APF, and every seed will clear the target
+on at least 44 of 50 layouts. Therefore both the shortfall and the
+instability at 1.00M come from stopping on the steep part of the
+learning curve. At 1.85M the same policy will beat APF by 4.61 points
+at 20\% density ($p<10^{-14}$, $r_{rb}=1.00$). Thus what
+Table~\ref{tab:stats} records at that density represents the training
+budget talking, and not a ceiling on the method. Holding the budget
+fixed across every controller and density represents the right control
+for the main comparison. However, at 20\% it will understate the
+learned controller.
+
+How far that will generalize is untested. The extended-budget evidence
+comes from one density. In addition, 10\% represents a different
+regime, with a smaller starting margin and sparser structure for APF
+to exploit. The same direction is plausible there. However,
+"plausible" represents an inference, and not a measurement. Therefore
+repeating the protocol at every density represents future work.
+
+\subsection{APF Parameter Sensitivity}\label{sec:sweep}
+
+The repulsion parameters were swept over $k_{rep} \in \{0.5, 1.0, 1.5,
+2.5, 4.0\}$ and $r_{rep} \in \{1,2,3,4\}$ at every density. The
+reported configuration $(1.5, 2)$ will sit on a broad "plateau", due
+to the fact that coverage will vary by under two points across the
+center of the grid, and it will degrade sharply only at $r_{rep}=4$,
+where the repulsion radius approaches the corridor width. Therefore
+APF's showing represents a property of the method here, and not of a
+fortunate parameter choice, which is what makes it a fair comparator.
+The full surface is in the supplementary output.
+
+%% ===================== VALIDATION ==============================
+\section{VALIDATION AND THREATS TO VALIDITY}\label{sec:validity}
+
+There were three defects found by auditing the experiment code, and
+all of them were repaired before any result above was generated. In
+addition, one earlier experiment is withdrawn. A fourth item (i.e.,
+the ablation in Section~\ref{sec:hybrid_ablation}) will be reported as
+a finding rather than as a defect.
+
+\subsection{The Hybrid Could Not Answer the Question}
+\label{sec:hybrid_ablation}
+
+An earlier iteration utilized one policy-controlled agent alongside
+five hand-written greedy agents, which represents an architecture
+common enough to be worth reporting on. It carried the shared-reward
+defect that is quantified in Section~\ref{sec:credit}, and a second
+one that is fatal on its own. Replacing the learned agent with an
+inert, a uniformly random, a greedy, and the trained agent will
+provide swarm coverage of 82.21\%, 82.37\%, 84.07\%, and 84.83\% at
+20\% density over 15 seeds. The trained policy represents the best of
+the four, so it had learned something. However, the entire range
+spanned by completely different behaviors for that one agent
+represents 1.86 percentage points, against a 9.37-point gap to APF.
+Therefore no agent could have closed it. Thus the hybrid's deficit
+represents a property of its five reactive agents, and not of the
+learned one, and no conclusion about PPO will follow from it.
+
+The fully decentralized architecture in Section~\ref{sec:ppo} will
+remove both problems. In addition, the 10.25-point margin between MARL
+and the hybrid in Table~\ref{tab:stats} will quantify what the
+shortcut cost.
+
+\subsection{Repaired Defects}
+
+\textbf{Uncontrolled obstacle seeding.} The Mesa models originally
+drew the obstacle seed from Mesa's internal generator, and not from
+the seed supplied by the runner. Therefore one seed gave different
+layouts on repeat (i.e., 503, 510, and 512 obstacle cells across three
+runs). Both models will now take an explicit seed, verified cell by
+cell, and that is what licenses the paired tests.
+
+\textbf{Seed Set B was not held out.} The earlier PPO environment
+mapped the episode seed with \texttt{s = \_ep\_seed \% 50}. Therefore
+Set B resolved to Set A's fifty layouts. The modulo was removed, and
+the sets are now disjoint. \textbf{Unequal episode budgets.} Boids ran
+for 800 steps against 700 for the others. All four will now utilize
+700.
+
+\textbf{A retracted ablation figure.} An earlier draft reported the
+memory-free policy at 95.0\% after 1.85M steps, and it concluded that
+the memory features bought convergence speed alone. However, the
+surviving checkpoint will re-evaluate to the 1.00M figure exactly
+(i.e., 89.55\%), and no checkpoint matching 95.0\% exists. Retrained
+from 1.00M to 1.85M it will score $90.0\pm4.2\%$, which represents the
+value in Table~\ref{tab:ablation}. Therefore the conclusion reverses.
+
+\subsection{Withdrawn and Outstanding}
+
+The sensor-noise experiment is withdrawn. For Boids and APF the
+perturbation corrupted the obstacle grid itself, once per episode,
+which marked approximately 398 of 1{,}991 free cells unreachable and
+imposed a mechanical ceiling near 80\% before the controller acted at
+all. However, for the hybrid it entered only the observation of the
+single learned agent, which will contribute 0.4\% of coverage.
+Therefore the comparison represents two different interventions, and
+it will support no conclusion. A valid version will require the same
+corruption, representation, and persistence for every controller.
+
+Redundancy is recorded for the MARL controller, but not
+retrospectively for the classical ones. Therefore no cross-controller
+comparison will be made.
+
+%% ===================== DISCUSSION ==============================
+\section{DISCUSSION}\label{sec:discussion}
+
+\textbf{Answering the question.} A decentralized multi-agent PPO
+policy (i.e., one in which every UAV learns from a local window,
+executes on its own network, and exchanges no messages) will reach
+90\% coverage at every obstacle density tested, and on layouts that it
+has never seen. APF will do so too, on the same layouts and by the
+same test. However, the two learned-free baselines will not. Against a
+well-tuned APF baseline it will win clearly in open terrain, it will
+tie at intermediate density, and at the hardest density it will trail
+on the development set but not on the held-out one. Therefore the
+answer to the research question represents "yes" for the criterion,
+and "qualified" for the comparison, i.e., decentralized learning will
+match classical reactive control on this task, and it will beat it
+where the geometry offers least structure.
+
+\textbf{Why the crossover occurs.} The two controllers will fail in
+opposite regimes, and the crossover in Fig.~\ref{fig:fourway}
+therefore represents the most informative result here. In an empty
+grid APF will have little to work with, due to the fact that six
+agents under mutual repulsion will spread evenly and will then have
+nothing to distinguish one direction from another, so they will
+re-sweep ground. However, the learned policy will carry a directional
+signal from its own belief map, and it will keep moving towards
+unexplored space, which represents exactly what an empty arena
+rewards. As obstacles increase, the situation narrows. Walls and
+corridors will provide APF's repulsion term with the structure that it
+requires, and they will channel agents along streets and decorrelate
+their paths. Meanwhile the learned policy will face a harder
+navigation problem, with a 7$\times$7 window that cannot see around a
+building. The 30\% result is significant on one seed set and not on
+the other, which suggests that the remaining gap is small relative to
+layout-to-layout variation. Therefore the classical controller will
+degrade most gracefully in clutter, while the learned one will exploit
+open space best.
+
+Section~\ref{sec:seedvar} will limit how far that reading extends. The
+crossover is measured at a fixed budget, and at 1.85M the learned
+controller will reach 98.8\% at 20\% density and will overtake APF
+there on every training seed. Therefore what the main experiment
+establishes is that the two are close under equal training, and not
+that clutter will impose a ceiling that the learned controller cannot
+pass.
+
+\textbf{What the absolute-cell result changes.} No controller will
+improve in absolute terms as obstacles increase, which is contrary to
+what percentage coverage suggests. This matters beyond the present
+study, due to the fact that coverage over free cells represents the
+standard metric across the literature surveyed in
+Section~\ref{sec:related}. Therefore any paper that varies obstacle
+density while reporting only that ratio will invite the same
+misreading.
+
+\textbf{Relation to the literature.} Fusco et al.~\cite{fusco2025}
+predict that fully decentralized MARL will underperform under high
+partial observability, and that the joint action space will make the
+design intractable at scale. This project confirms the second half
+directly, due to the fact that it hit the $8^6$ wall. However, it
+qualifies the first, since with parameter sharing, a per-agent reward,
+and onboard memory, a fully decentralized policy is competitive with
+(and in open terrain better than) a tuned classical controller.
+Therefore the result suggests that the pessimism concerns the naive
+formulation, rather than decentralization itself. The
+credit-assignment
+literature~\cite{foerster2018,sunehag2018,rashid2018} represents the
+reason, and Section~\ref{sec:credit} will put a number on it, i.e.,
+the same network on the shared team reward that those papers set out
+to repair will lose 30.6 points and will never reach the target. In
+this project, the difference between a policy that fails and one that
+beats APF was mostly a matter of what the agent was rewarded for.
+
+\textbf{Practical implication.} For open or lightly cluttered search
+areas the learned controller will cover most ground, and it will
+record between nine and twenty-six times fewer proximity events than
+either classical controller, with the margin narrowing as density
+rises. However, for dense urban clutter a tuned potential field will
+clear the same target, it will remain slightly ahead on coverage, and
+it is far cheaper to deploy, due to the fact that it requires no
+training and no GPU. Therefore the learned controller is worth its
+cost only if it is trained past the point where its across-seed spread
+closes. In addition, for any mission, adding agents will rival
+changing algorithm, i.e., six to nine UAVs will gain 5.3 to 10.2
+points, against an 11.0-point spread between the best and worst
+controller at six.
+
+%% ===================== CONCLUSION ==============================
+\section{CONCLUSIONS AND FUTURE WORK}\label{sec:conclusion}
+
+A parameter-shared multi-agent PPO policy driving six UAVs from local
+observations, with decentralized execution and no message passing,
+achieved 90.8\% to 96.1\% coverage across obstacle densities from 0\%
+to 30\% on both development and held-out layouts. Its mean will exceed
+the 90\% search-and-rescue planning target in every condition tested,
+and it will do so significantly in seven of eight after correction.
+APF will match that record, and the other two controllers will never
+reach the target. It beat a tuned APF controller by 4.7 and 5.0
+percentage points in open terrain, and it was statistically
+indistinguishable at 10\% and 20\% density. However, at 30\% it
+trailed by 3.8 points on the development set, which represents a
+difference that did not replicate on the held-out set. In addition, it
+beat a Boids baseline and a single-agent hybrid by 5.3 to 10.9 points
+throughout. Transfer to fifty unseen layouts changed coverage by at
+most 2.31 points, and it was never significant.
+
+There are two design decisions that account for that performance, and
+the ablations will size both. 1. Replacing the per-agent reward with
+the shared team reward, and changing nothing else, will cost 30.6
+points, and it will leave none of fifty runs at the target. 2.
+Removing the memory features will cost a further 4.0 points at one
+million steps, and the memory-free policy is still at 90.0\% after
+1.85M, having gained nothing from the extra 850k. Therefore to that
+budget those features will raise the ceiling, and not the speed of
+reaching it. Neither decision represents a refinement, and they will
+not fail alike. On the shared reward the policy will collapse to
+63.0\% and will lose to every baseline here, whereas without memory it
+will hold 89.6\%, ahead of Boids and the hybrid but short of both the
+target and APF. In addition, that second decision will qualify the
+headline, due to the fact that the memory features represent
+information which Boids and APF do not have. Therefore the comparison
+is between a learned controller with map memory and classical
+controllers without it, and on equal information APF will win at both
+budgets tested. A third result came from auditing the apparatus, i.e.,
+repeating training at four seeds will provide a 7.8-point across-seed
+spread at one million steps, which will halve by 1.85M, where every
+seed will pass APF and the policy will reach 98.8\% at 20\% density.
+
+\textbf{Contributions.} There are five. 1. A four-way comparison on
+identical matched layouts with 50 replications, paired significance
+tests, effect sizes, and bootstrap intervals, none of which will be
+reported by any of the eight studies surveyed in
+Table~\ref{tab:related}. 2. A controlled measurement of the
+credit-assignment problem, in which the reward scheme represents the
+only variable, and which will cost more coverage than the gap between
+any two controllers here. 3. Reporting of variance across training
+runs, which the surveyed literature omits. 4. Evidence that percentage
+coverage over free cells will mislead when free area varies. 5. A
+working decentralized MARL coverage system, with the training
+configuration that makes it learnable identified explicitly.
+
+\textbf{Limitations.} The simulation represents a 2D kinematic grid
+with perfect sensing and localization, and no inertia, wind, or
+battery model. Therefore only the relative ordering will plausibly
+transfer. In addition, the learned controller will carry memory
+features that the classical controllers lack, and the ablation shows
+that these will lift its ceiling. Thus the headline comparison is not
+one of equal information. The main experiment will also report one
+training seed per condition, at a budget that the seed study shows to
+be undertrained, and that study will cover 20\% density only.
+Therefore the density-dependent claims are not settled. Swarm size was
+fixed at six, hyperparameters were tuned only in the rollout-length
+dimension, the sensor-noise experiment is withdrawn, and a separate
+policy will be trained per density, rather than one generalizing
+across them.
+
+\textbf{Future work.} The immediate step will be to repeat the
+four-way comparison with several training seeds per cell at a budget
+past convergence, which the 20\% result suggests would turn parity
+into an advantage for the learned controller. Beyond that, one policy
+trained across all densities would test generalization over
+environment statistics as well as layouts. In addition, minimal
+communication would test whether the 30\% deficit represents a
+partial-observability limit or a policy limit, and a valid
+sensor-noise experiment would provide the robustness ordering that the
+withdrawn one could not. Longer term, PyBullet dynamics and Crazyflie
+flights at the Bristol Robotics Laboratory would test whether the
+ordering will survive hardware.
+
+%% ===================== BIBLIOGRAPHY (excluded from count) ======
+% References set one step down, as IEEE conference papers normally do.
+% All 28 entries are unchanged and complete; only the type size moves.
+{\footnotesize\linespread{0.90}\selectfont
+\bibliographystyle{IEEEtran}
+\bibliography{References}
+}
+
+\end{document}

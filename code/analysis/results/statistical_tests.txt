@@ -1,0 +1,293 @@
+==============================================================================
+STATISTICAL ANALYSIS — UAV SWARM COVERAGE
+Boids vs Artificial Potential Field vs Decentralised PPO
+==============================================================================
+
+DATA PROVENANCE AND DESIGN
+------------------------------------------------------------------------------
+Results regenerated 2026-08-01 from the repaired harness. All three
+controllers use a 700-step episode budget:
+  APF    -> phase3_apf/results/apf_results_A.npy  (700 steps)
+  Boids  -> phase2_boids/results/boids_results_A.npy  (700 steps)
+  MARL   -> phase5_marl/results/marl_results_A.npy  (700 steps)
+  PPO    -> phase4_ppo/results/ppo_results_A.npy  (700 steps)
+
+Three defects present in the earlier generation were repaired
+before these runs: the obstacle seed is now passed explicitly to
+both Mesa models, the modulo that mapped Seed Set B onto Seed Set
+A layouts was removed, and the episode budget was equalised.
+
+Pairing verification:
+  Set A, density  0%: seeds 0-49 (n=50), labels aligned: True
+  Set A, density 10%: seeds 0-49 (n=50), labels aligned: True
+  Set A, density 20%: seeds 0-49 (n=50), labels aligned: True
+  Set A, density 30%: seeds 0-49 (n=50), labels aligned: True
+  Set B, density  0%: seeds 50-99 (n=50), labels aligned: True
+  Set B, density 10%: seeds 50-99 (n=50), labels aligned: True
+  Set B, density 20%: seeds 50-99 (n=50), labels aligned: True
+  Set B, density 30%: seeds 50-99 (n=50), labels aligned: True
+
+Layout identity check (regenerated maps compared cell by cell):
+  density  0%: identical layout across all three controllers for 10/10 sampled seeds
+  density 10%: identical layout across all three controllers for 10/10 sampled seeds
+  density 20%: identical layout across all three controllers for 10/10 sampled seeds
+  density 30%: identical layout across all three controllers for 10/10 sampled seeds
+  => Matched-pairs design verified: True
+
+TEST SELECTION
+------------------------------------------------------------------------------
+Each seed defines one obstacle layout, replayed identically for all
+three controllers, so observations are matched. The primary test is
+the paired Wilcoxon signed-rank test. Mann-Whitney U, which
+discards the pairing, is reported as an assumption-light
+robustness check, and Welch's t so that a reader preferring a
+parametric framework can confirm the conclusions hold. All p-values
+within a family are Holm-Bonferroni corrected. Alpha = 0.05, n = 50
+per condition, bootstrap intervals use 10,000 resamples.
+
+NORMALITY SCREENING (Shapiro-Wilk)
+------------------------------------------------------------------------------
+27 of 32 condition-level coverage distributions
+depart from normality at alpha = 0.05. Non-normal cells are listed
+below. This departure is the formal justification for treating the
+rank-based tests as primary rather than the t-test.
+  Set A  Boids   0%  W=0.9177  p=0.0019
+  Set A  Boids  10%  W=0.9052  p=0.0007
+  Set A  Boids  20%  W=0.9188  p=0.0021
+  Set A  Boids  30%  W=0.8751  p=<0.0001
+  Set A  APF     0%  W=0.9043  p=0.0007
+  Set A  APF    10%  W=0.8870  p=0.0002
+  Set A  APF    20%  W=0.8796  p=0.0001
+  Set A  APF    30%  W=0.9122  p=0.0012
+  Set A  PPO     0%  W=0.8459  p=<0.0001
+  Set A  PPO    20%  W=0.9030  p=0.0006
+  Set A  PPO    30%  W=0.9373  p=0.0106
+  Set A  MARL    0%  W=0.8628  p=<0.0001
+  Set A  MARL   10%  W=0.9393  p=0.0127
+  Set A  MARL   20%  W=0.9255  p=0.0037
+  Set A  MARL   30%  W=0.8618  p=<0.0001
+  Set B  Boids   0%  W=0.9314  p=0.0062
+  Set B  Boids  10%  W=0.8305  p=<0.0001
+  Set B  Boids  30%  W=0.9261  p=0.0039
+  Set B  APF    10%  W=0.8716  p=<0.0001
+  Set B  APF    20%  W=0.9256  p=0.0038
+  Set B  APF    30%  W=0.8362  p=<0.0001
+  Set B  PPO    10%  W=0.9403  p=0.0139
+  Set B  PPO    30%  W=0.9458  p=0.0231
+  Set B  MARL    0%  W=0.9143  p=0.0015
+  Set B  MARL   10%  W=0.8931  p=0.0003
+  Set B  MARL   20%  W=0.9452  p=0.0218
+  Set B  MARL   30%  W=0.9136  p=0.0014
+
+TABLE S1 — DESCRIPTIVE STATISTICS
+------------------------------------------------------------------------------
+Seed Set A
+ Density Method     Mean     SD  Median           95% CI  n>=90%
+      0% Boids     87.89   4.46   88.52 [ 86.65, 89.07]   17/50
+      0% APF       91.36   3.57   92.06 [ 90.35, 92.30]   36/50
+      0% PPO       85.79   5.72   87.10 [ 84.17, 87.28]   13/50
+      0% MARL      96.07   1.51   96.58 [ 95.63, 96.46]   50/50
+     10% Boids     86.71   4.77   87.19 [ 85.37, 87.97]   12/50
+     10% APF       92.52   3.88   93.87 [ 91.42, 93.53]   39/50
+     10% PPO       84.99   5.53   85.37 [ 83.42, 86.45]    9/50
+     10% MARL      93.73   2.53   94.16 [ 92.99, 94.40]   45/50
+     20% Boids     85.72   5.58   86.72 [ 84.14, 87.21]   12/50
+     20% APF       94.20   3.45   95.10 [ 93.23, 95.12]   42/50
+     20% PPO       84.83   6.95   86.84 [ 82.81, 86.70]   13/50
+     20% MARL      93.55   3.69   94.44 [ 92.53, 94.53]   41/50
+     30% Boids     84.62   6.58   85.08 [ 82.73, 86.31]    9/50
+     30% APF       94.66   2.71   95.07 [ 93.89, 95.36]   47/50
+     30% PPO       83.80   6.13   84.70 [ 82.11, 85.42]   10/50
+     30% MARL      90.84   5.69   92.11 [ 89.21, 92.31]   35/50
+
+Seed Set B
+ Density Method     Mean     SD  Median           95% CI  n>=90%
+      0% Boids     86.64   4.58   87.50 [ 85.33, 87.84]   12/50
+      0% APF       90.46   4.10   90.88 [ 89.34, 91.56]   27/50
+      0% PPO       85.58   5.16   86.16 [ 84.16, 86.97]   11/50
+      0% MARL      95.48   1.81   95.82 [ 94.98, 95.95]   49/50
+     10% Boids     86.82   6.38   88.22 [ 84.96, 88.49]   18/50
+     10% APF       93.02   3.81   94.00 [ 91.91, 94.02]   41/50
+     10% PPO       85.93   4.72   86.27 [ 84.57, 87.19]    8/50
+     10% MARL      93.84   2.74   94.57 [ 93.08, 94.57]   46/50
+     20% Boids     87.46   4.88   87.61 [ 86.10, 88.77]   17/50
+     20% APF       94.52   2.83   95.48 [ 93.72, 95.27]   47/50
+     20% PPO       84.38   6.30   85.48 [ 82.66, 86.08]    9/50
+     20% MARL      92.79   3.78   93.83 [ 91.73, 93.81]   36/50
+     30% Boids     83.62   6.74   85.46 [ 81.72, 85.44]    7/50
+     30% APF       94.04   4.42   95.29 [ 92.78, 95.24]   42/50
+     30% PPO       82.22   6.77   81.90 [ 80.33, 84.04]    5/50
+     30% MARL      93.14   3.80   94.34 [ 92.04, 94.14]   41/50
+
+TABLE S2 — PAIRWISE METHOD COMPARISONS (paired Wilcoxon, primary)
+------------------------------------------------------------------------------
+Seed Set A
+ Dens Comparison        Diff(pp)            95% CI        W         p    Holm p   r_rb Mag        
+   0% MARL vs APF           4.71 [  3.67,  5.81]     38.0   <0.0001   <0.0001   0.94 large      
+   0% MARL vs Boids         8.19 [  7.00,  9.40]      0.0   <0.0001   <0.0001   1.00 large      
+   0% MARL vs PPO          10.28 [  8.72, 11.95]      1.0   <0.0001   <0.0001   1.00 large      
+   0% APF vs Boids          3.47 [  1.84,  5.11]    268.0    0.0004    0.0025   0.58 large      
+   0% PPO vs APF           -5.57 [ -7.68, -3.62]    144.0   <0.0001   <0.0001  -0.77 large      
+   0% PPO vs Boids         -2.10 [ -3.82, -0.43]    372.5    0.0105    0.0631  -0.42 small      
+  10% MARL vs APF           1.21 [ -0.09,  2.53]    483.0    0.1381    0.5523   0.24 negligible 
+  10% MARL vs Boids         7.02 [  5.59,  8.51]     27.0   <0.0001   <0.0001   0.96 large      
+  10% MARL vs PPO           8.74 [  6.98, 10.48]     24.0   <0.0001   <0.0001   0.96 large      
+  10% APF vs Boids          5.82 [  4.12,  7.44]    118.0   <0.0001   <0.0001   0.81 large      
+  10% PPO vs APF           -7.54 [ -9.34, -5.69]     66.0   <0.0001   <0.0001  -0.90 large      
+  10% PPO vs Boids         -1.72 [ -3.40, -0.03]    440.0    0.0862    0.4309  -0.28 small      
+  20% MARL vs APF          -0.65 [ -2.02,  0.72]    512.0    0.2297    0.6892  -0.20 negligible 
+  20% MARL vs Boids         7.83 [  6.11,  9.58]     48.0   <0.0001   <0.0001   0.93 large      
+  20% MARL vs PPO           8.72 [  6.56, 10.98]     50.0   <0.0001   <0.0001   0.92 large      
+  20% APF vs Boids          8.48 [  6.68, 10.38]     28.0   <0.0001   <0.0001   0.96 large      
+  20% PPO vs APF           -9.37 [-11.67, -7.24]     41.0   <0.0001   <0.0001  -0.94 large      
+  20% PPO vs Boids         -0.89 [ -3.39,  1.63]    572.0    0.5336    0.7245  -0.10 negligible 
+  30% MARL vs APF          -3.82 [ -5.59, -2.15]    232.0   <0.0001    0.0004  -0.64 large      
+  30% MARL vs Boids         6.21 [  3.87,  8.46]    158.0   <0.0001   <0.0001   0.75 large      
+  30% MARL vs PPO           7.04 [  4.54,  9.52]    148.0   <0.0001   <0.0001   0.77 large      
+  30% APF vs Boids         10.04 [  8.24, 11.98]      8.0   <0.0001   <0.0001   0.99 large      
+  30% PPO vs APF          -10.87 [-12.65, -9.13]      2.0   <0.0001   <0.0001  -1.00 large      
+  30% PPO vs Boids         -0.83 [ -2.93,  1.32]    542.0    0.3622    0.7245  -0.15 negligible 
+
+Seed Set B
+ Dens Comparison        Diff(pp)            95% CI        W         p    Holm p   r_rb Mag        
+   0% MARL vs APF           5.02 [  3.72,  6.31]     80.5   <0.0001   <0.0001   0.87 large      
+   0% MARL vs Boids         8.84 [  7.48, 10.31]      8.0   <0.0001   <0.0001   0.99 large      
+   0% MARL vs PPO           9.90 [  8.46, 11.43]      0.0   <0.0001   <0.0001   1.00 large      
+   0% APF vs Boids          3.83 [  1.88,  5.82]    290.5    0.0008    0.0065   0.54 medium     
+   0% PPO vs APF           -4.89 [ -6.67, -3.08]    182.0   <0.0001   <0.0001  -0.71 large      
+   0% PPO vs Boids         -1.06 [ -2.86,  0.67]    517.5    0.3447    0.9649  -0.15 negligible 
+  10% MARL vs APF           0.82 [ -0.59,  2.30]    567.0    0.5025    0.9649   0.11 negligible 
+  10% MARL vs Boids         7.02 [  5.15,  9.05]     86.0   <0.0001   <0.0001   0.86 large      
+  10% MARL vs PPO           7.91 [  6.34,  9.46]     38.0   <0.0001   <0.0001   0.94 large      
+  10% APF vs Boids          6.20 [  4.21,  8.31]    124.0   <0.0001   <0.0001   0.81 large      
+  10% PPO vs APF           -7.09 [ -8.99, -5.29]     78.0   <0.0001   <0.0001  -0.88 large      
+  10% PPO vs Boids         -0.89 [ -3.07,  1.35]    522.0    0.2695    0.9649  -0.18 small      
+  20% MARL vs APF          -1.73 [ -2.99, -0.51]    430.0    0.0450    0.2702  -0.33 small      
+  20% MARL vs Boids         5.33 [  3.69,  7.06]    144.0   <0.0001   <0.0001   0.77 large      
+  20% MARL vs PPO           8.41 [  6.41, 10.49]     64.0   <0.0001   <0.0001   0.90 large      
+  20% APF vs Boids          7.06 [  5.57,  8.57]     39.0   <0.0001   <0.0001   0.94 large      
+  20% PPO vs APF          -10.14 [-11.98, -8.32]     18.0   <0.0001   <0.0001  -0.97 large      
+  20% PPO vs Boids         -3.07 [ -5.66, -0.52]    421.0    0.0363    0.2539  -0.34 small      
+  30% MARL vs APF          -0.90 [ -2.45,  0.68]    465.0    0.1423    0.7116  -0.24 small      
+  30% MARL vs Boids         9.52 [  7.54, 11.56]     28.0   <0.0001   <0.0001   0.96 large      
+  30% MARL vs PPO          10.92 [  8.93, 12.99]      7.0   <0.0001   <0.0001   0.99 large      
+  30% APF vs Boids         10.42 [  8.23, 12.70]     35.0   <0.0001   <0.0001   0.94 large      
+  30% PPO vs APF          -11.83 [-13.59,-10.05]      8.0   <0.0001   <0.0001  -0.99 large      
+  30% PPO vs Boids         -1.40 [ -4.06,  1.27]    515.0    0.2412    0.9649  -0.19 negligible 
+
+Mann-Whitney U robustness check (pairing discarded):
+  Set A: agrees with Wilcoxon on 24/24 comparisons at Holm-corrected alpha = 0.05.
+  Set B: agrees with Wilcoxon on 24/24 comparisons at Holm-corrected alpha = 0.05.
+Welch's t-test agreement:
+  Set A: agrees with Wilcoxon on 24/24 comparisons at uncorrected alpha = 0.05.
+  Set B: agrees with Wilcoxon on 24/24 comparisons at uncorrected alpha = 0.05.
+
+TABLE S3 — GENERALISATION (Seed Set A vs Seed Set B)
+------------------------------------------------------------------------------
+Method   Dens   Mean A   Mean B  Drop(pp)            95% CI     MWU p    Holm p  <10pp
+Boids      0%    87.89    86.64      1.25 [ -0.48,  2.97]    0.1234    1.0000   True
+Boids     10%    86.71    86.82     -0.11 [ -2.25,  2.11]    0.3362    1.0000   True
+Boids     20%    85.72    87.46     -1.73 [ -3.76,  0.26]    0.1392    1.0000   True
+Boids     30%    84.62    83.62      1.00 [ -1.55,  3.58]    0.5602    1.0000   True
+APF        0%    91.36    90.46      0.90 [ -0.60,  2.34]    0.2806    1.0000   True
+APF       10%    92.52    93.02     -0.50 [ -1.98,  1.00]    0.5742    1.0000   True
+APF       20%    94.20    94.52     -0.32 [ -1.53,  0.88]    0.8174    1.0000   True
+APF       30%    94.66    94.04      0.62 [ -0.76,  2.07]    0.7854    1.0000   True
+PPO        0%    85.79    85.58      0.21 [ -1.97,  2.31]    0.4607    1.0000   True
+PPO       10%    84.99    85.93     -0.94 [ -2.96,  1.04]    0.3556    1.0000   True
+PPO       20%    84.83    84.38      0.45 [ -2.17,  2.97]    0.5103    1.0000   True
+PPO       30%    83.80    82.22      1.58 [ -0.88,  4.14]    0.1680    1.0000   True
+MARL       0%    96.07    95.48      0.60 [ -0.04,  1.25]    0.0448    0.6722   True
+MARL      10%    93.73    93.84     -0.11 [ -1.11,  0.91]    0.6516    1.0000   True
+MARL      20%    93.55    92.79      0.76 [ -0.68,  2.19]    0.3125    1.0000   True
+MARL      30%    90.84    93.14     -2.31 [ -4.22, -0.49]    0.0286    0.4578   True
+
+TABLE S4 — TESTS AGAINST THE 90% COVERAGE CRITERION
+------------------------------------------------------------------------------
+One-sided Wilcoxon signed-rank of coverage against the 90% threshold.
+ Set Method   Dens    Mean           95% CI    p(>90)      Holm Verdict                     
+   A Boids      0%   87.89 [ 86.62, 89.05]    0.9970    1.0000 indistinguishable from 90%  
+   A Boids     10%   86.71 [ 85.35, 87.94]    1.0000    1.0000 falls short of 90%          
+   A Boids     20%   85.72 [ 84.15, 87.17]    1.0000    1.0000 falls short of 90%          
+   A Boids     30%   84.62 [ 82.68, 86.33]    1.0000    1.0000 falls short of 90%          
+   A APF        0%   91.36 [ 90.32, 92.30]    0.0016    0.0307 exceeds 90%                 
+   A APF       10%   92.52 [ 91.42, 93.56]   <0.0001    0.0008 exceeds 90%                 
+   A APF       20%   94.20 [ 93.22, 95.10]   <0.0001   <0.0001 exceeds 90%                 
+   A APF       30%   94.66 [ 93.89, 95.36]   <0.0001   <0.0001 exceeds 90%                 
+   A PPO        0%   85.79 [ 84.16, 87.26]    1.0000    1.0000 falls short of 90%          
+   A PPO       10%   84.99 [ 83.45, 86.48]    1.0000    1.0000 falls short of 90%          
+   A PPO       20%   84.83 [ 82.80, 86.63]    1.0000    1.0000 falls short of 90%          
+   A PPO       30%   83.80 [ 82.07, 85.45]    1.0000    1.0000 falls short of 90%          
+   A MARL       0%   96.07 [ 95.65, 96.47]   <0.0001   <0.0001 exceeds 90%                 
+   A MARL      10%   93.73 [ 93.03, 94.39]   <0.0001   <0.0001 exceeds 90%                 
+   A MARL      20%   93.55 [ 92.53, 94.53]   <0.0001   <0.0001 exceeds 90%                 
+   A MARL      30%   90.84 [ 89.16, 92.30]    0.0277    0.4992 indistinguishable from 90%  
+   B Boids      0%   86.64 [ 85.28, 87.84]    1.0000    1.0000 falls short of 90%          
+   B Boids     10%   86.82 [ 84.93, 88.44]    0.9996    1.0000 falls short of 90%          
+   B Boids     20%   87.46 [ 86.11, 88.77]    0.9993    1.0000 falls short of 90%          
+   B Boids     30%   83.62 [ 81.68, 85.41]    1.0000    1.0000 falls short of 90%          
+   B APF        0%   90.46 [ 89.32, 91.54]    0.1758    1.0000 indistinguishable from 90%  
+   B APF       10%   93.02 [ 91.92, 94.02]   <0.0001   <0.0001 exceeds 90%                 
+   B APF       20%   94.52 [ 93.73, 95.26]   <0.0001   <0.0001 exceeds 90%                 
+   B APF       30%   94.04 [ 92.79, 95.18]   <0.0001   <0.0001 exceeds 90%                 
+   B PPO        0%   85.58 [ 84.14, 86.93]    1.0000    1.0000 falls short of 90%          
+   B PPO       10%   85.93 [ 84.57, 87.21]    1.0000    1.0000 falls short of 90%          
+   B PPO       20%   84.38 [ 82.63, 86.09]    1.0000    1.0000 falls short of 90%          
+   B PPO       30%   82.22 [ 80.36, 84.01]    1.0000    1.0000 falls short of 90%          
+   B MARL       0%   95.48 [ 94.97, 95.95]   <0.0001   <0.0001 exceeds 90%                 
+   B MARL      10%   93.84 [ 93.06, 94.56]   <0.0001   <0.0001 exceeds 90%                 
+   B MARL      20%   92.79 [ 91.73, 93.80]   <0.0001   <0.0001 exceeds 90%                 
+   B MARL      30%   93.14 [ 92.07, 94.14]   <0.0001   <0.0001 exceeds 90%                 
+
+==============================================================================
+SENTENCES READY FOR THE RESULTS CHAPTER
+==============================================================================
+[Set A, 0%] MARL achieved 96.07% mean coverage against APF's 91.36%, a difference of 4.71 pp higher (95% CI [3.67, 5.81]; Wilcoxon signed-rank W = 38.0, p = <0.0001, Holm-adjusted p = <0.0001; rank-biserial r = 0.94, Cliff's delta = 0.86, large effect) - statistically significant after Holm correction.
+[Set A, 0%] MARL achieved 96.07% mean coverage against Boids's 87.89%, a difference of 8.19 pp higher (95% CI [7.00, 9.40]; Wilcoxon signed-rank W = 0.0, p = <0.0001, Holm-adjusted p = <0.0001; rank-biserial r = 1.00, Cliff's delta = 0.98, large effect) - statistically significant after Holm correction.
+[Set A, 0%] MARL achieved 96.07% mean coverage against PPO's 85.79%, a difference of 10.28 pp higher (95% CI [8.72, 11.95]; Wilcoxon signed-rank W = 1.0, p = <0.0001, Holm-adjusted p = <0.0001; rank-biserial r = 1.00, Cliff's delta = 0.99, large effect) - statistically significant after Holm correction.
+[Set A, 0%] APF achieved 91.36% mean coverage against Boids's 87.89%, a difference of 3.47 pp higher (95% CI [1.84, 5.11]; Wilcoxon signed-rank W = 268.0, p = 0.0004, Holm-adjusted p = 0.0025; rank-biserial r = 0.58, Cliff's delta = 0.50, large effect) - statistically significant after Holm correction.
+[Set A, 0%] PPO achieved 85.79% mean coverage against APF's 91.36%, a difference of 5.57 pp lower (95% CI [-7.68, -3.62]; Wilcoxon signed-rank W = 144.0, p = <0.0001, Holm-adjusted p = <0.0001; rank-biserial r = -0.77, Cliff's delta = -0.67, large effect) - statistically significant after Holm correction.
+[Set A, 0%] PPO achieved 85.79% mean coverage against Boids's 87.89%, a difference of 2.10 pp lower (95% CI [-3.82, -0.43]; Wilcoxon signed-rank W = 372.5, p = 0.0105, Holm-adjusted p = 0.0631; rank-biserial r = -0.42, Cliff's delta = -0.23, small effect) - not statistically significant after Holm correction.
+[Set A, 10%] MARL achieved 93.73% mean coverage against APF's 92.52%, a difference of 1.21 pp higher (95% CI [-0.09, 2.53]; Wilcoxon signed-rank W = 483.0, p = 0.1381, Holm-adjusted p = 0.5523; rank-biserial r = 0.24, Cliff's delta = 0.11, negligible effect) - not statistically significant after Holm correction.
+[Set A, 10%] MARL achieved 93.73% mean coverage against Boids's 86.71%, a difference of 7.02 pp higher (95% CI [5.59, 8.51]; Wilcoxon signed-rank W = 27.0, p = <0.0001, Holm-adjusted p = <0.0001; rank-biserial r = 0.96, Cliff's delta = 0.87, large effect) - statistically significant after Holm correction.
+[Set A, 10%] MARL achieved 93.73% mean coverage against PPO's 84.99%, a difference of 8.74 pp higher (95% CI [6.98, 10.48]; Wilcoxon signed-rank W = 24.0, p = <0.0001, Holm-adjusted p = <0.0001; rank-biserial r = 0.96, Cliff's delta = 0.87, large effect) - statistically significant after Holm correction.
+[Set A, 10%] APF achieved 92.52% mean coverage against Boids's 86.71%, a difference of 5.82 pp higher (95% CI [4.12, 7.44]; Wilcoxon signed-rank W = 118.0, p = <0.0001, Holm-adjusted p = <0.0001; rank-biserial r = 0.81, Cliff's delta = 0.69, large effect) - statistically significant after Holm correction.
+[Set A, 10%] PPO achieved 84.99% mean coverage against APF's 92.52%, a difference of 7.54 pp lower (95% CI [-9.34, -5.69]; Wilcoxon signed-rank W = 66.0, p = <0.0001, Holm-adjusted p = <0.0001; rank-biserial r = -0.90, Cliff's delta = -0.74, large effect) - statistically significant after Holm correction.
+[Set A, 10%] PPO achieved 84.99% mean coverage against Boids's 86.71%, a difference of 1.72 pp lower (95% CI [-3.40, -0.03]; Wilcoxon signed-rank W = 440.0, p = 0.0862, Holm-adjusted p = 0.4309; rank-biserial r = -0.28, Cliff's delta = -0.21, small effect) - not statistically significant after Holm correction.
+[Set A, 20%] MARL achieved 93.55% mean coverage against APF's 94.20%, a difference of 0.65 pp lower (95% CI [-2.02, 0.72]; Wilcoxon signed-rank W = 512.0, p = 0.2297, Holm-adjusted p = 0.6892; rank-biserial r = -0.20, Cliff's delta = -0.10, negligible effect) - not statistically significant after Holm correction.
+[Set A, 20%] MARL achieved 93.55% mean coverage against Boids's 85.72%, a difference of 7.83 pp higher (95% CI [6.11, 9.58]; Wilcoxon signed-rank W = 48.0, p = <0.0001, Holm-adjusted p = <0.0001; rank-biserial r = 0.93, Cliff's delta = 0.79, large effect) - statistically significant after Holm correction.
+[Set A, 20%] MARL achieved 93.55% mean coverage against PPO's 84.83%, a difference of 8.72 pp higher (95% CI [6.56, 10.98]; Wilcoxon signed-rank W = 50.0, p = <0.0001, Holm-adjusted p = <0.0001; rank-biserial r = 0.92, Cliff's delta = 0.78, large effect) - statistically significant after Holm correction.
+[Set A, 20%] APF achieved 94.20% mean coverage against Boids's 85.72%, a difference of 8.48 pp higher (95% CI [6.68, 10.38]; Wilcoxon signed-rank W = 28.0, p = <0.0001, Holm-adjusted p = <0.0001; rank-biserial r = 0.96, Cliff's delta = 0.84, large effect) - statistically significant after Holm correction.
+[Set A, 20%] PPO achieved 84.83% mean coverage against APF's 94.20%, a difference of 9.37 pp lower (95% CI [-11.67, -7.24]; Wilcoxon signed-rank W = 41.0, p = <0.0001, Holm-adjusted p = <0.0001; rank-biserial r = -0.94, Cliff's delta = -0.84, large effect) - statistically significant after Holm correction.
+[Set A, 20%] PPO achieved 84.83% mean coverage against Boids's 85.72%, a difference of 0.89 pp lower (95% CI [-3.39, 1.63]; Wilcoxon signed-rank W = 572.0, p = 0.5336, Holm-adjusted p = 0.7245; rank-biserial r = -0.10, Cliff's delta = -0.03, negligible effect) - not statistically significant after Holm correction.
+[Set A, 30%] MARL achieved 90.84% mean coverage against APF's 94.66%, a difference of 3.82 pp lower (95% CI [-5.59, -2.15]; Wilcoxon signed-rank W = 232.0, p = <0.0001, Holm-adjusted p = 0.0004; rank-biserial r = -0.64, Cliff's delta = -0.48, large effect) - statistically significant after Holm correction.
+[Set A, 30%] MARL achieved 90.84% mean coverage against Boids's 84.62%, a difference of 6.21 pp higher (95% CI [3.87, 8.46]; Wilcoxon signed-rank W = 158.0, p = <0.0001, Holm-adjusted p = <0.0001; rank-biserial r = 0.75, Cliff's delta = 0.62, large effect) - statistically significant after Holm correction.
+[Set A, 30%] MARL achieved 90.84% mean coverage against PPO's 83.80%, a difference of 7.04 pp higher (95% CI [4.54, 9.52]; Wilcoxon signed-rank W = 148.0, p = <0.0001, Holm-adjusted p = <0.0001; rank-biserial r = 0.77, Cliff's delta = 0.66, large effect) - statistically significant after Holm correction.
+[Set A, 30%] APF achieved 94.66% mean coverage against Boids's 84.62%, a difference of 10.04 pp higher (95% CI [8.24, 11.98]; Wilcoxon signed-rank W = 8.0, p = <0.0001, Holm-adjusted p = <0.0001; rank-biserial r = 0.99, Cliff's delta = 0.92, large effect) - statistically significant after Holm correction.
+[Set A, 30%] PPO achieved 83.80% mean coverage against APF's 94.66%, a difference of 10.87 pp lower (95% CI [-12.65, -9.13]; Wilcoxon signed-rank W = 2.0, p = <0.0001, Holm-adjusted p = <0.0001; rank-biserial r = -1.00, Cliff's delta = -0.95, large effect) - statistically significant after Holm correction.
+[Set A, 30%] PPO achieved 83.80% mean coverage against Boids's 84.62%, a difference of 0.83 pp lower (95% CI [-2.93, 1.32]; Wilcoxon signed-rank W = 542.0, p = 0.3622, Holm-adjusted p = 0.7245; rank-biserial r = -0.15, Cliff's delta = -0.08, negligible effect) - not statistically significant after Holm correction.
+
+[Set B, 0%] MARL achieved 95.48% mean coverage against APF's 90.46%, a difference of 5.02 pp higher (95% CI [3.72, 6.31]; Wilcoxon signed-rank W = 80.5, p = <0.0001, Holm-adjusted p = <0.0001; rank-biserial r = 0.87, Cliff's delta = 0.76, large effect) - statistically significant after Holm correction.
+[Set B, 0%] MARL achieved 95.48% mean coverage against Boids's 86.64%, a difference of 8.84 pp higher (95% CI [7.48, 10.31]; Wilcoxon signed-rank W = 8.0, p = <0.0001, Holm-adjusted p = <0.0001; rank-biserial r = 0.99, Cliff's delta = 0.97, large effect) - statistically significant after Holm correction.
+[Set B, 0%] MARL achieved 95.48% mean coverage against PPO's 85.58%, a difference of 9.90 pp higher (95% CI [8.46, 11.43]; Wilcoxon signed-rank W = 0.0, p = <0.0001, Holm-adjusted p = <0.0001; rank-biserial r = 1.00, Cliff's delta = 0.96, large effect) - statistically significant after Holm correction.
+[Set B, 0%] APF achieved 90.46% mean coverage against Boids's 86.64%, a difference of 3.83 pp higher (95% CI [1.88, 5.82]; Wilcoxon signed-rank W = 290.5, p = 0.0008, Holm-adjusted p = 0.0065; rank-biserial r = 0.54, Cliff's delta = 0.45, medium effect) - statistically significant after Holm correction.
+[Set B, 0%] PPO achieved 85.58% mean coverage against APF's 90.46%, a difference of 4.89 pp lower (95% CI [-6.67, -3.08]; Wilcoxon signed-rank W = 182.0, p = <0.0001, Holm-adjusted p = <0.0001; rank-biserial r = -0.71, Cliff's delta = -0.54, large effect) - statistically significant after Holm correction.
+[Set B, 0%] PPO achieved 85.58% mean coverage against Boids's 86.64%, a difference of 1.06 pp lower (95% CI [-2.86, 0.67]; Wilcoxon signed-rank W = 517.5, p = 0.3447, Holm-adjusted p = 0.9649; rank-biserial r = -0.15, Cliff's delta = -0.14, negligible effect) - not statistically significant after Holm correction.
+[Set B, 10%] MARL achieved 93.84% mean coverage against APF's 93.02%, a difference of 0.82 pp higher (95% CI [-0.59, 2.30]; Wilcoxon signed-rank W = 567.0, p = 0.5025, Holm-adjusted p = 0.9649; rank-biserial r = 0.11, Cliff's delta = 0.11, negligible effect) - not statistically significant after Holm correction.
+[Set B, 10%] MARL achieved 93.84% mean coverage against Boids's 86.82%, a difference of 7.02 pp higher (95% CI [5.15, 9.05]; Wilcoxon signed-rank W = 86.0, p = <0.0001, Holm-adjusted p = <0.0001; rank-biserial r = 0.86, Cliff's delta = 0.80, large effect) - statistically significant after Holm correction.
+[Set B, 10%] MARL achieved 93.84% mean coverage against PPO's 85.93%, a difference of 7.91 pp higher (95% CI [6.34, 9.46]; Wilcoxon signed-rank W = 38.0, p = <0.0001, Holm-adjusted p = <0.0001; rank-biserial r = 0.94, Cliff's delta = 0.89, large effect) - statistically significant after Holm correction.
+[Set B, 10%] APF achieved 93.02% mean coverage against Boids's 86.82%, a difference of 6.20 pp higher (95% CI [4.21, 8.31]; Wilcoxon signed-rank W = 124.0, p = <0.0001, Holm-adjusted p = <0.0001; rank-biserial r = 0.81, Cliff's delta = 0.70, large effect) - statistically significant after Holm correction.
+[Set B, 10%] PPO achieved 85.93% mean coverage against APF's 93.02%, a difference of 7.09 pp lower (95% CI [-8.99, -5.29]; Wilcoxon signed-rank W = 78.0, p = <0.0001, Holm-adjusted p = <0.0001; rank-biserial r = -0.88, Cliff's delta = -0.81, large effect) - statistically significant after Holm correction.
+[Set B, 10%] PPO achieved 85.93% mean coverage against Boids's 86.82%, a difference of 0.89 pp lower (95% CI [-3.07, 1.35]; Wilcoxon signed-rank W = 522.0, p = 0.2695, Holm-adjusted p = 0.9649; rank-biserial r = -0.18, Cliff's delta = -0.19, small effect) - not statistically significant after Holm correction.
+[Set B, 20%] MARL achieved 92.79% mean coverage against APF's 94.52%, a difference of 1.73 pp lower (95% CI [-2.99, -0.51]; Wilcoxon signed-rank W = 430.0, p = 0.0450, Holm-adjusted p = 0.2702; rank-biserial r = -0.33, Cliff's delta = -0.27, small effect) - not statistically significant after Holm correction.
+[Set B, 20%] MARL achieved 92.79% mean coverage against Boids's 87.46%, a difference of 5.33 pp higher (95% CI [3.69, 7.06]; Wilcoxon signed-rank W = 144.0, p = <0.0001, Holm-adjusted p = <0.0001; rank-biserial r = 0.77, Cliff's delta = 0.61, large effect) - statistically significant after Holm correction.
+[Set B, 20%] MARL achieved 92.79% mean coverage against PPO's 84.38%, a difference of 8.41 pp higher (95% CI [6.41, 10.49]; Wilcoxon signed-rank W = 64.0, p = <0.0001, Holm-adjusted p = <0.0001; rank-biserial r = 0.90, Cliff's delta = 0.75, large effect) - statistically significant after Holm correction.
+[Set B, 20%] APF achieved 94.52% mean coverage against Boids's 87.46%, a difference of 7.06 pp higher (95% CI [5.57, 8.57]; Wilcoxon signed-rank W = 39.0, p = <0.0001, Holm-adjusted p = <0.0001; rank-biserial r = 0.94, Cliff's delta = 0.80, large effect) - statistically significant after Holm correction.
+[Set B, 20%] PPO achieved 84.38% mean coverage against APF's 94.52%, a difference of 10.14 pp lower (95% CI [-11.98, -8.32]; Wilcoxon signed-rank W = 18.0, p = <0.0001, Holm-adjusted p = <0.0001; rank-biserial r = -0.97, Cliff's delta = -0.89, large effect) - statistically significant after Holm correction.
+[Set B, 20%] PPO achieved 84.38% mean coverage against Boids's 87.46%, a difference of 3.07 pp lower (95% CI [-5.66, -0.52]; Wilcoxon signed-rank W = 421.0, p = 0.0363, Holm-adjusted p = 0.2539; rank-biserial r = -0.34, Cliff's delta = -0.29, small effect) - not statistically significant after Holm correction.
+[Set B, 30%] MARL achieved 93.14% mean coverage against APF's 94.04%, a difference of 0.90 pp lower (95% CI [-2.45, 0.68]; Wilcoxon signed-rank W = 465.0, p = 0.1423, Holm-adjusted p = 0.7116; rank-biserial r = -0.24, Cliff's delta = -0.22, small effect) - not statistically significant after Holm correction.
+[Set B, 30%] MARL achieved 93.14% mean coverage against Boids's 83.62%, a difference of 9.52 pp higher (95% CI [7.54, 11.56]; Wilcoxon signed-rank W = 28.0, p = <0.0001, Holm-adjusted p = <0.0001; rank-biserial r = 0.96, Cliff's delta = 0.83, large effect) - statistically significant after Holm correction.
+[Set B, 30%] MARL achieved 93.14% mean coverage against PPO's 82.22%, a difference of 10.92 pp higher (95% CI [8.93, 12.99]; Wilcoxon signed-rank W = 7.0, p = <0.0001, Holm-adjusted p = <0.0001; rank-biserial r = 0.99, Cliff's delta = 0.87, large effect) - statistically significant after Holm correction.
+[Set B, 30%] APF achieved 94.04% mean coverage against Boids's 83.62%, a difference of 10.42 pp higher (95% CI [8.23, 12.70]; Wilcoxon signed-rank W = 35.0, p = <0.0001, Holm-adjusted p = <0.0001; rank-biserial r = 0.94, Cliff's delta = 0.85, large effect) - statistically significant after Holm correction.
+[Set B, 30%] PPO achieved 82.22% mean coverage against APF's 94.04%, a difference of 11.83 pp lower (95% CI [-13.59, -10.05]; Wilcoxon signed-rank W = 8.0, p = <0.0001, Holm-adjusted p = <0.0001; rank-biserial r = -0.99, Cliff's delta = -0.87, large effect) - statistically significant after Holm correction.
+[Set B, 30%] PPO achieved 82.22% mean coverage against Boids's 83.62%, a difference of 1.40 pp lower (95% CI [-4.06, 1.27]; Wilcoxon signed-rank W = 515.0, p = 0.2412, Holm-adjusted p = 0.9649; rank-biserial r = -0.19, Cliff's delta = -0.14, negligible effect) - not statistically significant after Holm correction.

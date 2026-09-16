@@ -1,0 +1,14 @@
+# Virtual environments — regenerate with:  pip install -r requirements.txt
+venv/
+uav_swarm_env/
+.venv/
+
+# macOS / editor noise
+.DS_Store
+*.backup
+*.backup2
+__pycache__/
+*.pyc
+
+# Superseded working output
+compare/results/

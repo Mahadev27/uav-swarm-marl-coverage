@@ -1,0 +1,13 @@
+config,label,n,mean,sd,ci95_low,ci95_high,n_at_or_above_90
+mem_1.00M_s0,"Memory, 1.00M, seed 0 (reported)",50,93.55,3.69,92.51,94.52,41
+mem_1.85M_s0,"Memory, 1.85M, seed 0",50,98.81,0.97,98.53,99.05,50
+nomem_1.00M,"No memory, 1.00M",50,89.55,4.57,88.26,90.76,31
+nomem_1.85M,"No memory, 1.85M",50,89.98,4.15,88.82,91.09,29
+mem_1.00M_s1,"Memory, 1.00M, seed 1",50,92.98,3.07,92.14,93.79,41
+mem_1.00M_s2,"Memory, 1.00M, seed 2",50,91.08,4.75,89.72,92.35,31
+mem_1.00M_s3,"Memory, 1.00M, seed 3",50,85.75,4.25,84.6,86.9,9
+team_1.00M_s0,"Shared team reward, 1.00M, seed 0",50,62.95,6.32,61.22,64.67,0
+mem_1.85M_s1,"Memory, 1.85M, seed 1",50,98.87,0.76,98.66,99.07,50
+mem_1.85M_s2,"Memory, 1.85M, seed 2",50,96.81,2.94,95.95,97.57,49
+mem_1.85M_s3,"Memory, 1.85M, seed 3",50,94.69,3.46,93.72,95.61,44
+APF,"APF, tuned (no training)",50,94.2,3.45,93.22,95.11,42

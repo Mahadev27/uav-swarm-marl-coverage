@@ -1,0 +1,45 @@
+# Virtual environments - rebuild with: pip install -r code/requirements-lock.txt
+venv/
+.venv/
+uav_swarm_env/
+code/venv/
+
+# macOS / editor noise
+.DS_Store
+__pycache__/
+*.pyc
+*.backup
+*.backup2
+
+# Superseded working output
+_archive/
+code/compare/
+
+# LaTeX build artefacts
+*.aux
+*.log
+*.out
+*.bbl
+*.blg
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+
+# Large local-only bundles
+_code_backup_with_comments.zip
+Supplementary_2823511.zip
+*.zip
+!code/**/results/*.zip
+
+# Local-only bundles and recordings
+Supplementary*.zip
+Dissertation_FINAL_Overleaf_*.zip
+*.mov
+*.mp4
+"Dissertation Video.mov"
+Supplementary/
+Supplementary 2/
+Dissertation/
+"new papers"/
+"research papers"/
+figures/
